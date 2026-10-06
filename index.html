@@ -278,12 +278,184 @@
         </div>
         <div class="field">
           <label>Holding period (years)</label>
+         
+    .dnum{font-size:22px}
+    .verdict h2{font-size:18px}
+  }
+  /* ================= v0.6: guided steps, path picker, financing, AI panel ================= */
+  :root{
+    --teal:#2fe0a0; --amber:#ffd166; --pink:#ff7a9a; --lime:#a3e635; --gold:#ffb347;
+  }
+  .stephead{display:flex;align-items:center;gap:10px;margin:2px 0 12px;flex-wrap:wrap}
+  .stepnum{width:28px;height:28px;border-radius:9px;display:inline-grid;place-items:center;font-weight:800;font-size:13.5px;color:#fff;box-shadow:0 4px 12px rgba(2,6,18,.45);flex:0 0 auto}
+  .stepnum.s1{background:linear-gradient(135deg,#2fe0a0,#0ea5e9)}
+  .stepnum.s2{background:linear-gradient(135deg,#a78bfa,#6d28d9)}
+  .stepnum.s3{background:linear-gradient(135deg,#ffd166,#ff7a59)}
+  .stepnum.s4{background:linear-gradient(135deg,#4da3ff,#2fe0a0)}
+  .stephead .stt{font-size:15px;font-weight:700;letter-spacing:.3px;color:#f2f6ff}
+  .stephead .stepsub{font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+  .fullband{margin:14px 0;background:linear-gradient(150deg,rgba(16,32,58,.95),rgba(12,22,42,.95));border-color:#2c4470}
+  /* step 1 - path picker tiles */
+  .pathpick{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+  .pathpick .t label{
+    display:flex;align-items:center;gap:10px;height:100%;padding:12px 14px;cursor:pointer;color:var(--txt);font-weight:600;font-size:14px;position:relative;
+    border:1px solid var(--line);border-radius:13px;background:linear-gradient(165deg,rgba(17,28,51,.92),rgba(13,21,40,.94));transition:.18s;
+  }
+  .pathpick .t input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+  .pathpick .t input:focus-visible + .pic{outline:2px solid #4da3ff;outline-offset:3px}
+  .pathpick .t label:hover{transform:translateY(-2px);border-color:var(--pc,#4da3ff)}
+  .pathpick .pic{width:30px;height:30px;border-radius:9px;display:inline-grid;place-items:center;flex:0 0 auto;background:var(--pcbg,rgba(77,163,255,.15));color:var(--pc,#4da3ff)}
+  .pathpick .pic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .pathpick .lbl{display:flex;flex-direction:column;line-height:1.25}
+  .pathpick .lbl i{font-style:normal;font-size:11px;color:var(--muted);font-weight:500}
+  .pathpick .t span.dot{width:17px;height:17px;border:2px solid var(--line);border-radius:50%;background:transparent;transition:.18s;margin-left:auto;flex:0 0 auto}
+  .pathpick .t input:checked + span.dot{background:var(--pc,#4da3ff);border-color:var(--pc,#4da3ff);box-shadow:0 0 0 var(--pcg,4px) var(--pcgl,rgba(77,163,255,.22))}
+  .tb-bto{--pc:#4da3ff;--pcbg:rgba(77,163,255,.15);--pcg:4px;--pcgl:rgba(77,163,255,.22)}
+  .tb-hdb{--pc:#2fe0a0;--pcbg:rgba(47,224,160,.15);--pcg:4px;--pcgl:rgba(47,224,160,.22)}
+  .tb-new{--pc:#a78bfa;--pcbg:rgba(167,139,250,.16);--pcg:4px;--pcgl:rgba(167,139,250,.24)}
+  .tb-res{--pc:#ffb347;--pcbg:rgba(255,179,71,.16);--pcg:4px;--pcgl:rgba(255,179,71,.24)}
+  /* holding period - single control */
+  .hz{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .hzcustom{display:flex;align-items:center;gap:7px}
+  .hzcustom input{width:78px;text-align:center;font-weight:700}
+  .hzcustom span{font-size:12.5px;color:var(--muted)}
+  .horizonEcho{margin-top:6px;font-size:13.5px;font-family:var(--mono);color:#9cc6ff;background:rgba(77,163,255,.1);border:1px dashed rgba(77,163,255,.4);border-radius:9px;padding:7px 11px}
+  /* financing block */
+  .fin{background:linear-gradient(150deg,rgba(47,224,160,.07),rgba(15,23,48,.85));border:1px dashed #2f6b57;border-radius:13px;padding:14px;margin-top:6px}
+  .fin .finhead{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#7fe6c0;margin-bottom:10px}
+  .fin .finhead .ic{background:rgba(47,224,160,.16);color:#2fe0a0}
+  .fin p{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+  .loantype{display:flex;gap:8px;flex-wrap:wrap}
+  /* AI analysis panel */
+  .ai{margin-top:14px;border:1px solid #3a3f7a;border-radius:16px;padding:16px 18px;position:relative;overflow:hidden;
+      background:linear-gradient(160deg,rgba(124,92,255,.12),rgba(15,23,48,.94) 55%,rgba(13,44,56,.9));}
+  .ai::after{content:"";position:absolute;right:-56px;top:-56px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(47,224,160,.16),transparent 70%)}
+  .aihead{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;letter-spacing:.3px;margin-bottom:6px;position:relative;z-index:1;flex-wrap:wrap}
+  .aibadge{background:linear-gradient(135deg,#a78bfa,#2fe0a0);color:#08111f;border-radius:8px;padding:2px 9px;font-size:11.5px;font-weight:800;letter-spacing:.8px}
+  .ainote{font-size:11px;color:var(--muted);font-weight:500;margin-left:auto}
+  .ai p{margin:8px 0;font-size:13.5px;color:#cddcf5;line-height:1.62;position:relative;z-index:1}
+  .ai p b{color:#fff}
+  .ai p b.k{color:#8be9d0}
+  .ai ul{margin:6px 0 2px;padding-left:19px;font-size:13.3px;color:#cddcf5;line-height:1.6;position:relative;z-index:1}
+  .ai li{margin:4px 0}
+  .ai li b{color:#ffe3ae}
+  .ai .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;position:relative;z-index:1}
+  .ai .pills span{font-size:11.5px;padding:4px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#cddcf5}
+  /* metric-card icon palette (per measure, more colour) */
+  .mchip.k-price{background:rgba(77,163,255,.18);color:#7cc4ff}
+  .mchip.k-cash{background:rgba(255,209,102,.18);color:#ffd166}
+  .mchip.k-cpf{background:rgba(163,230,53,.16);color:#bef264}
+  .mchip.k-grant{background:rgba(47,224,160,.18);color:#2fe0a0}
+  .mchip.k-loan{background:rgba(167,139,250,.2);color:#c4b5fd}
+  .mchip.k-monthly{background:rgba(255,122,154,.18);color:#ff9ab1}
+  .mchip.k-sale{background:rgba(124,92,255,.2);color:#b8a6ff}
+  .mchip.k-pnl{background:rgba(77,163,255,.2);color:#7cc4ff}
+  .mcard .v.k-sale{color:#b8a6ff}
+  .mcard .v.k-loan{color:#c4b5fd}
+  .chip.primary{background:var(--grad);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 5px 16px rgba(77,163,255,.3)}
+  .chip.primary:hover{transform:translateY(-1px);color:#fff;filter:brightness(1.08)}
+  .subtle{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+</style>
+</head>
+<body>
+  <!-- DASHBOARD: basic details first, then profile & strategy, live summary at the bottom -->
+  <section id="view-dash" class="card shown">
+    <div class="intro" style="margin-top:0">
+      <p>Your <strong>Dashboard</strong> holds the basic details once - how many buyers (1 or 2), residency, ages, income, cash, CPF OA, debts, existing property, remaining lease and loan tenure. Every calculator reuses them <strong>locked</strong>, so all four paths stay aligned to the same profile.</p>
+      <p>Grants are matched to <strong>your</strong> income band, citizenship mix and single/joint status (EHG, Family/Singles Grant, Proximity Grant). Loans and LTV are re-derived from your <strong>joint ages and the CPF age-95 lease rule</strong>. Pick your strategy below - the summary at the bottom updates live. Open a calculator only to refine path-specific details (price, CAGR, flat type, rent).</p>
+      <p><strong>Three quick steps:</strong> (1) tick the <strong>paths to consider</strong>, (2) pick your <strong>buying strategy</strong>, (3) set <strong>one holding period</strong> that every calculator, the comparison table and the CSV all share. Then fill in your details - they stay <strong>locked</strong> across all four calculators.</p>
+      <p>Grants are matched to <strong>your</strong> income band, citizenship mix and single/joint status. Loans are derived from your <strong>loan choice (HDB concessionary or bank), joint ages, LTV and the CPF age-95 lease rule</strong>. The summary and the AI analysis at the bottom update live.</p>
+    </div>
+
+    <!-- STEP 1: paths to consider - first, before strategy & holding period -->
+    <div class="card fullband">
+      <div class="stephead"><span class="stepnum s1">1</span><span class="stt">Paths to consider</span><span class="stepsub">tick every path you want compared - do this first</span></div>
+      <div class="pathpick">
+        <div class="t tb-bto"><label><input type="checkbox" id="showBto" checked><span class="pic"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3.5l9 7.3"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5h4v5"/></svg></span><span class="lbl">BTO / SBF<i>new flat &middot; subsidy</i></span><span class="dot"></span></label></div>
+        <div class="t tb-hdb"><label><input type="checkbox" id="showHdb" checked><span class="pic"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/></svg></span><span class="lbl">Resale HDB<i>public &middot; grants</i></span><span class="dot"></span></label></div>
+        <div class="t tb-new"><label><input type="checkbox" id="showNew" checked><span class="pic"><svg viewBox="0 0 24 24"><path d="M6 21V6l7-3v18"/><path d="M13 10h5v11"/><path d="M9 8h1M9 12h1M9 16h1M16 14h1M16 17h1"/></svg></span><span class="lbl">New condo<i>launch &middot; wait</i></span><span class="dot"></span></label></div>
+        <div class="t tb-res"><label><input type="checkbox" id="showRes" checked><span class="pic"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="4"/><path d="M13 12h8m-3 0v3m-3-3v2"/></svg></span><span class="lbl">Resale condo<i>move-in ready</i></span><span class="dot"></span></label></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="field">
+          </div>
+        </div>
+        <div class="field">
+          <label>Loan tenure requested (yrs, 0 = no loan)</label>
+          <input class="inp" id="tenure" type="number" step="1" value="20">
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0">Capped by rule: HDB loan = min(25 yrs, 65 - average applicant age, remaining lease). Bank loans: max 30 yrs (HDB flat) / 35 yrs (private). Lower LTV applies if tenure &gt; 25/30 yrs or joint age + tenure &gt; 65.</p>
+          <label>Loan tenure requested (years - pick from the list)</label>
+          <select class="inp" id="tenure">
+            <option value="0">0 - no loan (cash purchase)</option>
+            <option value="5">5 years</option>
+            <option value="10">10 years</option>
+            <option value="15">15 years</option>
+            <option value="20" selected>20 years</option>
+            <option value="25">25 years</option>
+            <option value="30">30 years</option>
+            <option value="35">35 years</option>
+          </select>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0">The calculator caps it for you: HDB loan = min(25 yrs, 65 - average applicant age, remaining lease); bank loan = max 30 yrs (HDB flat) / 35 yrs (private), never beyond the remaining lease. A lower LTV applies if tenure &gt; 25/30 yrs or joint age + tenure &gt; 65.</p>
+        </div>
+        <div class="fin">
+          <div class="finhead"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></span>Financing - which loan &amp; rate</div>
+          <div class="field">
+            <label>BTO / SBF loan type</label>
+            <select class="inp" id="loanTypeBto">
+              <option value="hdb" selected>HDB concessionary loan - 2.60%, 75% LTV, CPF-friendly</option>
+              <option value="bank">Bank loan - market rate, shorter tenure rules</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Resale HDB loan type</label>
+            <select class="inp" id="loanTypeHdb">
+              <option value="hdb" selected>HDB concessionary loan - 2.60% (income ceiling S$16,000)</option>
+              <option value="bank">Bank loan - market rate, MSR applies</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Bank interest rate % p.a. (editable - moves every month)</label>
+            <input class="inp" id="bankRate" type="number" step="0.05" min="0.1" max="15" value="2.80">
+          </div>
+          <p>Condos always use a bank loan. HDB loans are fixed at 2.60% by HDB; bank rates float - update this field with your latest quote (new loans are stressed at 4% for TDSR/MSR, 3% for HDB loans).</p>
+        </div>
+        <div class="field">
+          <label>HDB scheme (info) &amp; rental management</label>
+          <div class="row">
+      </div>
+
+      <div class="card">
+        <div class="stephead"><span class="stepnum s2">2</span><span class="stt">Buying strategy</span><span class="stepsub">what this home is for</span></div>
+        <div class="field">
+          <label>Property-buying strategy (your intent)</label>
+          <div class="chips" style="margin:0">
+            </div>
+          </div>
+        </div>
+        <div class="stephead" style="margin-top:18px"><span class="stepnum s3">3</span><span class="stt">Holding period</span><span class="stepsub">one single value for every calculator</span></div>
+        <div class="field">
+          <label>Holding period (years)</label>
           <div id="horizons" style="display:flex;gap:8px;flex-wrap:wrap">
             <button data-h="5" class="chip">5</button>
             <button data-h="10" class="chip active">10</button>
             <button data-h="15" class="chip">15</button>
             <button data-h="20" class="chip">20</button>
+          <label>Hold for how long? (years)</label>
+          <div class="hz">
+            <div id="horizons" style="display:flex;gap:8px;flex-wrap:wrap">
+              <button data-h="5" class="chip">5</button>
+              <button data-h="10" class="chip active">10</button>
+              <button data-h="15" class="chip">15</button>
+              <button data-h="20" class="chip">20</button>
+              <button data-h="25" class="chip">25</button>
+              <button data-h="30" class="chip">30</button>
+            </div>
+            <div class="hzcustom"><input class="inp" id="horizonNum" type="number" min="1" max="40" step="1" value="10"><span>or type yrs</span></div>
           </div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0"><b style="color:#9cc6ff">Single holding period:</b> this one number drives the dashboard cards, the comparison table, all four calculators and the CSV - so no two screens can disagree. Net-net P&amp;L is always shown &ldquo;by year <span id="hzInline">10</span>&rdquo;.</p>
         </div>
         <div class="field">
           <label>Paths to consider</label>
@@ -297,20 +469,6 @@
         <p id="rentHint" style="font-size:12.5px;color:var(--muted);margin:0">For strategies C &amp; D, set the expected rent inside each calculator - it flows into the net-net result here.</p>
       </div>
     </div>
-
-    <div class="dashsum">
-      <h3>Your picture &middot; updates live with your profile &amp; strategy</h3>
-      <div id="dashBody"></div>
-    </div>
-  </section>
-
-  <!-- COMPARE: full side-by-side, winner per row -->
-  <section id="view-cmp" class="card" hidden>
-    <div class="verdict">
-      <div class="rank" id="vRank">#1</div>
-      <h2 id="vTitle">Your best fit</h2>
-      <p id="vWhy"></p>
-    </div>
     <div id="jointInfo" class="sens"></div>
 
     <div class="results-bar">
@@ -321,16 +479,20 @@
           <button data-h="15" class="chip">15</button>
           <button data-h="20" class="chip">20</button>
         </div>
+      <div class="rbfield"><label>Holding period (single)</label>
+        <div id="horizonEcho" class="horizonEcho">10 yrs - set on the Dashboard</div>
       </div>
       <div class="rbfield"><label>CAGR BTO %</label><input id="rBto" type="number" step="0.1"></div>
       <div class="rbfield"><label>CAGR resale HDB %</label><input id="rHdb" type="number" step="0.1"></div>
       <div class="rbfield"><label>CAGR new condo %</label><input id="rNew" type="number" step="0.1"></div>
       <div class="rbfield"><label>CAGR resale condo %</label><input id="rRes" type="number" step="0.1"></div>
+      <div class="rbfield"><label>CAGR BTO % (20-yr avg 4.5)</label><input id="rBto" type="number" step="0.1"></div>
+      <div class="rbfield"><label>CAGR resale HDB % (20-yr avg 5.0)</label><input id="rHdb" type="number" step="0.1"></div>
+      <div class="rbfield"><label>CAGR new condo % (20-yr avg 4.8)</label><input id="rNew" type="number" step="0.1"></div>
+      <div class="rbfield"><label>CAGR resale condo % (20-yr avg 4.7)</label><input id="rRes" type="number" step="0.1"></div>
       <div class="rbfield"><label>&nbsp;</label><div class="row"><button id="editInputs" class="chip">Edit inputs</button><button id="dl" class="chip">Download CSV</button></div></div>
     </div>
 
-    <div class="cmpwrap">
-      <table class="cmp">
         <thead>
           <tr>
             <th id="cmpHead0">Measure</th>
@@ -338,412 +500,156 @@
             <th id="cmpHeadHdb">Resale HDB<span class="cap">bank loan, MSR</span></th>
             <th id="cmpHeadNew">New condo<span class="cap">bank loan, TDSR</span></th>
             <th id="cmpHeadRes">Resale condo<span class="cap">bank loan, TDSR</span></th>
+            <th id="cmpHeadBto">BTO/SBF<span class="cap">new flat &middot; HDB or bank loan</span></th>
+            <th id="cmpHeadHdb">Resale HDB<span class="cap">resale flat &middot; HDB or bank loan</span></th>
+            <th id="cmpHeadNew">New condo<span class="cap">bank loan &middot; TDSR</span></th>
+            <th id="cmpHeadRes">Resale condo<span class="cap">bank loan &middot; TDSR</span></th>
           </tr>
         </thead>
         <tbody id="cmpBody"></tbody>
-      </table>
     </div>
 
     <div id="sensNote" class="sens"></div>
+    <div id="aiCmp"></div>
   </section>
 
   <!-- CALCULATOR: BTO / SBF -->
-  <section id="view-bto" class="card" hidden>
-    <div class="intro" style="margin-top:0">
-      <p><strong>BTO / SBF calculator</strong> - your Dashboard details stay locked and aligned; add only what is specific to this path.</p>
-    </div>
-    <div class="lock" id="lock-bto"></div>
-    <div class="card">
       <div class="grid2">
         <div class="field"><label>Expected price (SGD)</label>
           <input class="inp" id="pBto" type="number" step="100" value="500000"></div>
         <div class="field"><label>Price CAGR % (historical default, editable)</label>
           <input class="inp" id="cBto" type="number" step="0.1" value="3.1"></div>
+        <div class="field"><label>Price CAGR % - last-20-yr historical average (editable)</label>
+          <div class="row"><input class="inp" id="cBto" type="number" step="0.1" value="4.5"><button class="chip" data-cagr="cBto" type="button">Reset to 20-yr avg (4.5)</button></div>
+          <p class="subtle">Default 4.5%/yr = long-run new-flat/HDB market growth 2005-2025. Change it and every result recalculates instantly.</p></div>
       </div>
       <div class="row">
         <button class="chip" data-view="dash">&larr; Dashboard</button>
-        <button class="chip" data-view="cmp">Compare all</button>
-        <button class="chip" data-dl="1">Download CSV</button>
-      </div>
-    </div>
-    <div class="miss" id="miss-bto"></div>
-    <div id="out-bto"></div>
-  </section>
-
-  <!-- CALCULATOR: Resale HDB -->
-  <section id="view-hdb" class="card" hidden>
-    <div class="intro" style="margin-top:0">
-      <p><strong>Resale HDB calculator</strong> - your Dashboard details stay locked and aligned; flat type and proximity grant are set here because they size the resale grants.</p>
-    </div>
-    <div class="lock" id="lock-hdb"></div>
-    <div class="card">
       <div class="grid2">
         <div class="field"><label>Expected price (SGD)</label>
           <input class="inp" id="pHdb" type="number" step="100" value="520000"></div>
         <div class="field"><label>Price CAGR % (historical default, editable)</label>
           <input class="inp" id="cHdb" type="number" step="0.1" value="4.8"></div>
+        <div class="field"><label>Price CAGR % - last-20-yr historical average (editable)</label>
+          <div class="row"><input class="inp" id="cHdb" type="number" step="0.1" value="5.0"><button class="chip" data-cagr="cHdb" type="button">Reset to 20-yr avg (5.0)</button></div>
+          <p class="subtle">Default 5.0%/yr = HDB Resale Price Index 2005-2025 (~+164% over 20 yrs). Change it and every result recalculates instantly.</p></div>
         <div class="field"><label>Expected rent / month (strategies C &amp; D)</label>
           <input class="inp" id="rentHdb" type="number" step="50" value="0"></div>
         <div class="field"><label>Resale flat type (grant sizing)</label>
-          <select class="inp" id="flatType"><option value="small">2-4 room flat</option><option value="big">5-room or bigger</option></select></div>
-        <div class="field"><label>Proximity Housing Grant</label>
-          <select class="inp" id="phg"><option value="none">No proximity grant</option><option value="near">Near parents/child (4km)</option><option value="with">Living with parents/child</option></select></div>
-      </div>
-      <div class="row">
-        <button class="chip" data-view="dash">&larr; Dashboard</button>
-        <button class="chip" data-view="cmp">Compare all</button>
-        <button class="chip" data-dl="1">Download CSV</button>
-      </div>
-    </div>
-    <div class="miss" id="miss-hdb"></div>
-    <div id="out-hdb"></div>
-  </section>
-
-  <!-- CALCULATOR: New condo launch -->
-  <section id="view-new" class="card" hidden>
-    <div class="intro" style="margin-top:0">
-      <p><strong>New condo launch calculator</strong> - your Dashboard details stay locked and aligned; add the launch price, growth view and expected rent.</p>
-    </div>
-    <div class="lock" id="lock-new"></div>
-    <div class="card">
       <div class="grid2">
         <div class="field"><label>Expected price (SGD)</label>
           <input class="inp" id="pNew" type="number" step="100" value="700000"></div>
         <div class="field"><label>Price CAGR % (historical default, editable)</label>
           <input class="inp" id="cNew" type="number" step="0.1" value="5.2"></div>
+        <div class="field"><label>Price CAGR % - last-20-yr historical average (editable)</label>
+          <div class="row"><input class="inp" id="cNew" type="number" step="0.1" value="4.8"><button class="chip" data-cagr="cNew" type="button">Reset to 20-yr avg (4.8)</button></div>
+          <p class="subtle">Default 4.8%/yr = URA private residential price index 2005-2025 (~+150-160% over 20 yrs). Change it and every result recalculates instantly.</p></div>
         <div class="field"><label>Expected rent / month (strategies C &amp; D)</label>
           <input class="inp" id="rentCondo" type="number" step="50" value="0"></div>
       </div>
-      <div class="row">
-        <button class="chip" data-view="dash">&larr; Dashboard</button>
-        <button class="chip" data-view="cmp">Compare all</button>
-        <button class="chip" data-dl="1">Download CSV</button>
-      </div>
-    </div>
-    <div class="miss" id="miss-new"></div>
-    <div id="out-new"></div>
-  </section>
-
-  <!-- CALCULATOR: Resale condo -->
-  <section id="view-res" class="card" hidden>
-    <div class="intro" style="margin-top:0">
-      <p><strong>Resale condo calculator</strong> - your Dashboard details stay locked and aligned; add the target price, growth view and expected rent.</p>
-    </div>
-    <div class="lock" id="lock-res"></div>
-    <div class="card">
       <div class="grid2">
         <div class="field"><label>Expected price (SGD)</label>
           <input class="inp" id="pRes" type="number" step="100" value="720000"></div>
         <div class="field"><label>Price CAGR % (historical default, editable)</label>
           <input class="inp" id="cRes" type="number" step="0.1" value="5.2"></div>
+        <div class="field"><label>Price CAGR % - last-20-yr historical average (editable)</label>
+          <div class="row"><input class="inp" id="cRes" type="number" step="0.1" value="4.7"><button class="chip" data-cagr="cRes" type="button">Reset to 20-yr avg (4.7)</button></div>
+          <p class="subtle">Default 4.7%/yr = URA private residential price index 2005-2025 (~+150-160% over 20 yrs). Change it and every result recalculates instantly.</p></div>
         <div class="field"><label>Expected rent / month (strategies C &amp; D)</label>
           <input class="inp" id="rentRes" type="number" step="50" value="0"></div>
       </div>
-      <div class="row">
-        <button class="chip" data-view="dash">&larr; Dashboard</button>
-        <button class="chip" data-view="cmp">Compare all</button>
-        <button class="chip" data-dl="1">Download CSV</button>
-      </div>
-    </div>
-    <div class="miss" id="miss-res"></div>
-    <div id="out-res"></div>
-  </section>
-
-  <div id="errBox" hidden></div>
-  <footer>
-    Rules rev 2026-10-05 &middot; BSD/ABSD/SSD/property tax: IRAS &middot; LTV/TDSR/MSR &amp; joint income-weighted age: MAS &middot; grants, income ceilings &amp; HDB loan tenure: HDB (ceilings raised 24 Aug 2026) &middot; CPF age-95 lease proration: CPF Board.<br>
-    EHG/Family/Proximity grants are indicative - confirm via your HFE letter. Estimates only, not financial advice. All computation happens in your browser.
-  </footer>
-
-</main>
-
-<script>
-"use strict";
-/* ============================================================
-   RULES REGISTRY (rev 2026-10-05) - verified against official
-   sources (IRAS / MAS / HDB / CPF Board) on 5 Oct 2026.
-   ============================================================ */
-const RULES = {
-  rev: "2026-10-05",
-  // IRAS BSD residential, on/after 15 Feb 2023: [cumulativeUpperBound, rate]
-  bsd: [[180000,.01],[360000,.02],[1000000,.03],[1500000,.04],[3000000,.05],[Infinity,.06]],
-  // IRAS ABSD on/after 27 Apr 2023 (re-verified Oct 2026, unchanged)
-  absd: { sc:[0,.20,.30], pr:[.05,.30,.35], ff:[.60,.60,.60] },
-  // IRAS SSD, purchases on/after 4 Jul 2025: 4-yr holding, [maxHoldingYears, rate]
-  ssd: [[1,.16],[2,.12],[3,.08],[4,.04],[Infinity,0]],
-  // MAS LTV (OTP on/after 6 Jul 2018): high tier / low tier.
-  // Low tier if tenure>30y (25y for HDB flats) or joint age + tenure > 65.
-  ltv: [.75,.45,.35], ltvLow: [.55,.25,.15],
-  minCash: {75:.05, 55:.10, 45:.25, 35:.25, 25:.25, 15:.25},
-  tdsr: .55, msr: .30,
-  stressT: .04,   // bank stress floor 4% (MAS, eff 30 Sep 2022)
-  stressHdb: .03, // HDB concessionary stress floor 3% (MAS, eff 30 Sep 2022)
-  tenureHDB: 30, tenureMax: 35, tenureHDBloan: 25,
-  hdbLoanAgeCap: 65,   // HDB loan: tenure capped at 65 - average applicant age
   hdbRate: .026,       // HDB concessionary rate (Q3 2026: 2.60%)
   bankRate: .028,      // illustrative market package - user editable
   btoCeilingFamily: 16000, btoCeilingSingle: 8000, // HDB, from 24 Aug 2026 (NDR 2026)
+  hdbLoanCeilingFamily: 16000, hdbLoanCeilingSingle: 8000, // HDB housing-loan income ceiling, raised 14k->16k on 24 Aug 2026
+  // 20-year historical averages (2005-2025) used as editable CAGR defaults:
+  // HDB Resale Price Index ~+164% over 20 yrs (~5.0%/yr); URA private residential PPI
+  // ~+150-160% over 20 yrs (~4.7-4.8%/yr); new subsidised flats long-run below resale.
+  histCagr: {bto:4.5, hdb:5.0, "new":4.8, res:4.7},
   hdbLtv: .75,         // HDB concessionary LTV since 20 Aug 2024
   cpfAccrued: .025,
   cpfLeaseCapAge: 95, cpfMinLease: 20,   // CPF: lease covers youngest buyer to 95; min 20y lease
-  // EHG official tables (HDB PDFs, verified 5 Oct 2026)
-  ehgFam: [[1500,120000],[2000,110000],[2500,105000],[3000,95000],[3500,90000],[4000,80000],
-           [4500,70000],[5000,65000],[5500,55000],[6000,50000],[6500,40000],[7000,30000],
-           [7500,25000],[8000,20000],[8500,10000],[9000,5000],[Infinity,0]],
-  ehgSingle: [[750,60000],[1000,55000],[1250,52500],[1500,47500],[1750,45000],[2000,40000],
-              [2250,35000],[2500,32500],[2750,27500],[3000,25000],[3250,20000],[3500,15000],
-              [3750,12500],[4000,10000],[4250,5000],[4500,2500],[Infinity,0]],
-  // CPF Housing Grant (resale Family/Singles Grant) by citizenship mix & flat size
-  chg: { scsc:{small:80000, big:50000}, scpr:{small:70000, big:40000}, single:{small:40000, big:25000} },
-  chgCeiling: 16000, chgCeilingSingle: 8000,   // household / single applicant income ceilings
-  // Proximity Housing Grant (resale only, no income ceiling)
-  phg: { family:{near:20000, with:30000}, single:{near:10000, with:15000} },
-  // Property tax owner-occupied (IRAS, eff 1 Jan 2025); AV proxy 4% of price
-  ptOO: [[12000,0],[40000,.04],[50000,.06],[75000,.10],[85000,.14],[100000,.20],[140000,.26],[Infinity,.32]],
-  // Non-owner-occupied residential (IRAS, eff 1 Jan 2024)
-  ptNOO: [[30000,.12],[45000,.20],[60000,.28],[Infinity,.36]],
-  // Resident income tax (YA2024+): [cumulative, rate]
-  pit: [[20000,0],[40000,.02],[80000,.035],[120000,.07],[160000,.115],[200000,.15],
-        [240000,.18],[280000,.19],[320000,.20],[500000,.22],[1000000,.23],[Infinity,.24]],
-  deemedRent: .15,          // IRAS deemed rental expense election (15%)
-  leaseDuty: .004, leaseMonths: 24,
-  avProxy: .04,             // AV ~ 4% of value (estimate)
-  // Cost-ledger annual defaults (market norms, user-editable)
-  maintCondoMo: 450, hdbSCMo: 85, insuranceYr: 300, repairsPct: .003,
-  lettingPct: .0417,        // 1 month commission per 24-month lease, amortised
-  mgmtPct: .08, vacancyMo: 1, landlordInsuranceYr: 350,
-  agentExitPct: .02, legalBuy: 2500, legalSell: 2500, valuation: 300,
-  btoBuildYears: 4, launchBuildYears: 4,
-  // Scoring weights per intent
-  weights: {
-    A:{upfront:.20, monthly:.25, holding:.25, exit:.10, rental:0, risk:.20},
-    B:{upfront:.20, monthly:.15, holding:.15, exit:.30, rental:.05, risk:.15},
-    C:{upfront:.15, monthly:.15, holding:.05, exit:.15, rental:.35, risk:.15},
-    D:{upfront:.15, monthly:.15, holding:.05, exit:.25, rental:.20, risk:.20}
-  }
-};
-
-/* ================= utilities ================= */
-const $ = s => document.querySelector(s);
-const sgd = n => (n<0?"-":"") + "S$" + Math.round(Math.abs(n)).toLocaleString("en-SG");
-const pct = n => (n*100).toFixed(n*100 % 1 === 0 ? 0 : 1) + "%";
-const clamp = (n,lo,hi) => Math.min(hi, Math.max(lo, n));
-const v = id => parseFloat($("#"+id).value) || 0;
-
-function bands(el, amount){ // progressive: [[cumBound, rate]...]
-  let prev = 0, tax = 0;
-  for (const [b, r] of el){ if (amount > prev){ tax += (Math.min(amount, b) - prev) * r; prev = b; } else break; }
-  return tax;
-}
-function lookupBand(table, income){
-  for (const [b, amt] of table){ if (income <= b) return amt; }
-  return 0;
-}
-function annuityLoan(pmt, annualRate, years){
-  const i = annualRate/12, n = Math.round(years*12);
-  return i === 0 ? pmt*n : pmt*(1 - Math.pow(1+i, -n))/i;
-}
-function payment(loan, annualRate, years){
-  const i = annualRate/12, n = Math.round(years*12);
-  if (!loan || n <= 0) return 0;
-  return i === 0 ? loan/n : loan*i/(1 - Math.pow(1+i, -n));
-}
-function balanceAfter(loan, annualRate, years, paidYears){
-  const i = annualRate/12, n = Math.round(years*12), k = Math.round(paidYears*12);
-  if (k >= n || !loan) return 0;
-  return loan*(Math.pow(1+i, n) - Math.pow(1+i, k))/(Math.pow(1+i, n) - 1);
-}
-function interestOver(loan, annualRate, years, horizonYears){
-  let bal = loan, total = 0;
-  const i = annualRate/12, months = Math.min(Math.round(years*12), Math.round(horizonYears*12));
-  const pay = payment(loan, annualRate, years);
-  for (let m=0; m<months; m++){ const int = bal*i; total += int; bal = bal + int - pay; }
-  return total;
-}
-function ehgEstimate(income, solo){
-  return lookupBand(solo ? RULES.ehgSingle : RULES.ehgFam, income);
-}
-function marginalRate(chargeable){
-  let prev = 0;
-  for (const [b, r] of RULES.pit){ if (chargeable <= b) return r; prev = b; }
-  return .24;
-}
-function ssdRate(holdingYears){
-  for (const [y, r] of RULES.ssd) if (holdingYears <= y) return r;
-  return 0;
-}
-
-/* ===== age & CPF lease test (age-95 rule, min 20y lease) ===== */
-function leaseCtx(s){
-  const lease = s.remainingLease;
-  const need = Math.max(1, RULES.cpfLeaseCapAge - s.youngest);
-  const factor = lease < RULES.cpfMinLease ? 0 : Math.min(1, lease / need);
-  return {
-    lease: lease, need: need, factor: factor,
-    coverAge: s.youngest + lease,
-    full: factor >= 1 && lease > RULES.cpfMinLease
-  };
-}
-
-/* ===== grants: by income band, citizenship mix, single vs joint ===== */
-function grantsFor(key, s){
-  const out = {ehg:0, chg:0, phg:0, total:0, notes:[]};
-  if (key !== "bto" && key !== "hdb") return out;
-  if (s.owned > 0){ out.notes.push("no grants - current property ownership (first-timer + 30-month private-property rule)"); return out; }
-  if (s.anyFF){ out.notes.push("no grants - foreign co-buyer not eligible"); return out; }
-  if (!s.atLeastOneSC){ out.notes.push("no grants - both buyers are PRs"); return out; }
-  const L = leaseCtx(s);
-  const solo = s.solo;
-  // EHG - income-banded; lease must cover youngest buyer to age 95 with >20 yrs left
-  if (L.full){
-    out.ehg = ehgEstimate(s.income, solo);
-    if (out.ehg === 0) out.notes.push("EHG $0 - income above " + (solo ? "$4,500" : "$9,000") + " ceiling");
-  } else {
-    out.notes.push("EHG unavailable - lease covers youngest buyer only to age " + L.coverAge + " (need 95)");
-  }
-  // CPF Housing Grant (Family/Singles Grant) - resale only, lease > 20 yrs
-  if (key === "hdb"){
-    if (L.lease > RULES.cpfMinLease){
-      const big = s.flatType === "big";
-      if (solo){
-        if (s.income <= RULES.chgCeilingSingle) out.chg = big ? RULES.chg.single.big : RULES.chg.single.small;
-        else out.notes.push("Singles Grant $0 - own income above $8,000 ceiling");
-      } else {
-        if (s.income <= RULES.chgCeiling){
-          out.chg = big
-            ? (s.allSC ? RULES.chg.scsc.big : RULES.chg.scpr.big)
-            : (s.allSC ? RULES.chg.scsc.small : RULES.chg.scpr.small);
-        } else out.notes.push("Family Grant $0 - household income above $16,000 ceiling");
-      }
-      // PHG - no income ceiling, resale only, lease > 20 yrs
-      if (s.phg !== "none") out.phg = solo ? RULES.phg.single[s.phg] : RULES.phg.family[s.phg];
-    } else {
-      out.notes.push("resale grants need more than 20 yrs remaining lease");
-    }
-  }
-  out.total = out.ehg + out.chg + out.phg;
-  out.label = "EHG " + sgd(out.ehg) + " + Family/Singles Grant " + sgd(out.chg) + " + PHG " + sgd(out.phg);
-  return out;
-}
-
-/* ================= eligibility ================= */
-function eligible(path, s){
-  if (path === "bto"){
-    if (!s.allSC)
-      return {ok:false, why:"BTO/SBF requires ALL buyers to be Singapore Citizens."};
-    if (s.solo && s.age1 < 35)
-      return {ok:false, why:"Single applicants must be at least 35 years old to buy an HDB flat."};
-    const ceil = s.solo ? RULES.btoCeilingSingle : RULES.btoCeilingFamily;
-    if (s.income > ceil)
-      return {ok:false, why:"Household income exceeds the BTO/SBF ceiling of " + sgd(ceil) + "/mo (raised from 14k/7k on 24 Aug 2026)."};
-    let why = "Eligible (SC household, within income ceiling) - balloting required.";
-    if (s.owned > 0) why += " You own a property: must dispose within 6 months of taking possession; treated as second-timer for grants.";
-    return {ok:true, why:why};
-  }
-  if (path === "hdb"){
-    if (s.anyFF)
-      return {ok:false, why:"A foreigner cannot be an owner of an HDB flat."};
-    if (s.solo && s.age1 < 35)
-      return {ok:false, why:"Single applicants must be at least 35 years old to buy an HDB flat."};
-    let why = (s.residency === "pr" || s.residency2 === "pr")
-      ? "Eligible - resale HDB allows SC/PR households (ABSD 5% applies on the PR's first property)."
-      : "Eligible for resale HDB - no income ceiling for the purchase itself.";
-    if (s.owned > 0) why += " The 15-month wait-out for private-property owners was removed (27 Jul 2026), but you must dispose within 6 months and grants need 30 months clear of private property.";
-    return {ok:true, why:why};
-  }
-  return {ok:true, why:"No eligibility gates beyond funds - ABSD applies by residency and number of properties owned."};
-}
-
-/* ================= per-path engine ================= */
-function computePath(key, s){
-  const H = s.horizon;
-  const meta = {
-    bto:  {name:"BTO / SBF",       price:s.pBto,  cagr:s.cBto,  hdb:true,  loanType:"hdb",  wait:RULES.btoBuildYears},
-    hdb:  {name:"Resale HDB",      price:s.pHdb,  cagr:s.cHdb,  hdb:true,  loanType:"bank", wait:0},
-    new:  {name:"New condo",       price:s.pNew,  cagr:s.cNew,  hdb:false, loanType:"bank", wait:RULES.launchBuildYears},
-    res:  {name:"Resale condo",    price:s.pRes,  cagr:s.cRes,  hdb:false, loanType:"bank", wait:0}
-  }[key];
-
-  const out = {key:key, name:meta.name, price:meta.price, cagr:meta.cagr, wait:meta.wait, hdb:meta.hdb};
-  const el = eligible(key, s);
-  out.eligible = el.ok; out.why = el.why;
-  if (!(meta.price > 0)){ out.eligible = false; out.why = "Expected price not set - enter a price for this path."; }
-
-  // --- stamp duty (BSD + ABSD by residency and number of properties owned) ---
-  out.bsd = bands(RULES.bsd, meta.price);
-  const tierIdx = Math.min(s.owned, 2);
-  const absdRate = RULES.absd[s.absdProfile || s.residency][tierIdx];
-  out.absdRate = absdRate;
-  out.absd = meta.price * absdRate;
-  out.duty = out.bsd + out.absd;
-
-  // --- grants by income band / citizenship / single vs joint ---
-  const gr = grantsFor(key, s);
-  out.grant = gr.total;
-  out.grantDetail = gr.label + (gr.notes.length ? " (" + gr.notes.join("; ") + ")" : "");
-  out.grantNotes = gr.notes;
-
-  // --- age & lease / CPF age-95 test ---
-  const L = leaseCtx(s);
-  out.cpfFactor = L.factor;
-  out.cpfUsable = s.cpf * L.factor;
   out.leaseCoverAge = L.coverAge;
   out.lease = L.lease;
 
   // --- tenure caps (age-derived) ---
   let tenCap, tenCapWhy;
   if (key === "bto"){
+  // --- loan type (condos = bank; HDB paths = buyer's choice) ---
+  let loanType = (key === "new" || key === "res") ? "bank"
+    : (key === "bto" ? (s.loanBto === "bank" ? "bank" : "hdb")
+                     : (s.loanHdb === "bank" ? "bank" : "hdb"));
+  let loanFallback = null;
+  if (loanType === "hdb"){
+    // HDB housing loan: household income ceiling $16,000 (families, raised from $14k on 24 Aug 2026);
+    // buyers under the HDB single scheme sit on the singles ceiling ($7k -> $8k, same date).
+    const soloScheme = s.single === "yes";
+    const ceil = soloScheme ? RULES.hdbLoanCeilingSingle : RULES.hdbLoanCeilingFamily;
+    if (s.income > ceil){
+      loanType = "bank";
+      loanFallback = "HDB concessionary-loan income ceiling " + sgd(ceil) + "/mo exceeded (HDB, raised 14k-&gt;16k / 7k-&gt;8k on 24 Aug 2026) - a bank loan is used instead";
+    }
+  }
+  const isHdbLoan = loanType === "hdb";
+  out.loanType = loanType;
+  out.loanTypeAsked = (key === "new" || key === "res") ? "bank" : (key === "bto" ? (s.loanBto === "bank" ? "bank" : "hdb") : (s.loanHdb === "bank" ? "bank" : "hdb"));
+  out.loanTypeLabel = isHdbLoan ? "HDB concessionary loan (2.60%)" : "Bank loan (" + pct(s.bankRate || RULES.bankRate) + ")";
+  out.loanFallback = loanFallback;
+
+  // --- tenure caps (loan type + age) then remaining lease (applies to EVERY path) ---
+  let baseCap, tenCapWhy;
+  if (isHdbLoan){
     const byAge = Math.max(0, RULES.hdbLoanAgeCap - s.avgAge);
     tenCap = Math.min(RULES.tenureHDBloan, byAge, L.lease);
     tenCapWhy = "HDB loan: min(25y, 65 - avg age " + s.avgAge.toFixed(1) + " = " + byAge.toFixed(1) + "y, lease " + L.lease + "y)";
+    baseCap = Math.min(RULES.tenureHDBloan, byAge);
+    tenCapWhy = "HDB loan: min(25y, 65 - avg age " + s.avgAge.toFixed(1) + " = " + byAge.toFixed(1) + "y)";
   } else if (meta.hdb){
     tenCap = RULES.tenureHDB;
+    baseCap = RULES.tenureHDB;
     tenCapWhy = "MAS: max 30 yrs for HDB flats";
   } else {
     tenCap = RULES.tenureMax;
+    baseCap = RULES.tenureMax;
     tenCapWhy = "MAS: max 35 yrs for private property";
   }
+  const tenCap = Math.min(baseCap, L.lease);
+  if (L.lease < baseCap) tenCapWhy += ", remaining lease " + L.lease + "y caps it";
   const ten = Math.min(s.tenure, tenCap);
   out.tenureUsed = ten;
   out.tenureCap = tenCap;
-  out.tenureCapWhy = tenCapWhy;
-  const noLoan = ten <= 0;
-
   // --- capacity (TDSR / MSR; stress floors: banks 4%, HDB loan 3%) ---
   const tdsrCap = Math.max(0, RULES.tdsr*s.income - s.debts);
   const msrCap  = Math.max(0, RULES.msr*s.income);
   const stressUsed = key === "bto" ? RULES.stressHdb : RULES.stressT;
+  const stressUsed = isHdbLoan ? RULES.stressHdb : RULES.stressT;
   let capacity;
   if (noLoan){
     capacity = 0; out.bindingRatio = "No loan";
-  } else if (meta.hdb){
-    const cap = Math.min(msrCap, tdsrCap);
-    capacity = annuityLoan(cap, stressUsed, ten);
-    out.bindingRatio = cap === msrCap ? "MSR 30%" : "TDSR 55%";
-  } else {
-    capacity = annuityLoan(tdsrCap, stressUsed, ten);
-    out.bindingRatio = "TDSR 55%";
-  }
-  out.stressRate = stressUsed;
-
   // --- LTV (joint income-weighted age; low tier if tenure >25/30y or age+tenure >65) ---
   let ltvRate;
   out.lowLtv = false;
   if (key === "bto"){
+  if (isHdbLoan){
     ltvRate = RULES.hdbLtv;   // HDB concessionary 75% (since 20 Aug 2024)
   } else {
     const low = (ten > 30 || (meta.hdb && ten > 25) || (s.age + ten > 65));
-    out.lowLtv = low;
-    const arr = low ? RULES.ltvLow : RULES.ltv;
-    ltvRate = arr[Math.min(s.owned, 2)];
-  }
   out.ltvRate = ltvRate;
   const ltvCap = meta.price * ltvRate;
 
   out.loan = noLoan ? 0 : Math.max(0, Math.min(capacity, ltvCap));
   out.binding = noLoan ? "No loan - cash purchase" : (out.loan >= ltvCap - 1 ? "LTV " + pct(ltvRate) : out.bindingRatio);
+  // --- funding waterfall: 1) loan at MAX LTV (75%), 2) grants, 3) CPF OA, 4) cash ---
+  let loanTaken = noLoan ? 0 : Math.max(0, Math.min(capacity, ltvCap));
+  const minLoan = loanType === "bank" ? 100000 : 0;   // banks rarely book tiny loans
+  if (minLoan > 0 && loanTaken > 0 && loanTaken < minLoan && capacity >= minLoan && ltvCap >= minLoan)
+    loanTaken = minLoan;
+  out.loan = loanTaken;
+  out.binding = noLoan ? "No loan - cash purchase" : (Math.abs(loanTaken - ltvCap) < 1 ? "LTV " + pct(ltvRate) : out.bindingRatio);
   out.loanCapLTV = ltvCap;
   out.loanCapCapacity = capacity;
+  out.loanTargetLtv = ltvCap;
+  out.loanShortOfLtv = Math.max(0, ltvCap - loanTaken);   // TDSR/MSR below the max-LTV target
 
   // --- downpayment / cash / CPF (OA prorated by the age-95 lease test) ---
   const dp = meta.price - out.loan;
@@ -758,205 +664,69 @@ function computePath(key, s){
   const minCash = meta.price * minCashPct;
   if (key === "bto"){
     out.minCash = 0;              // HDB loan downpayment can be fully CPF
+  if (isHdbLoan){
+    out.minCash = 0;              // HDB concessionary downpayment can be fully CPF
     out.minCashShort = 0;
     out.cash = cashNeeded;
   } else {
-    out.minCash = minCash;        // bank loan: cash margin floor applies
-    out.minCashShort = Math.max(0, minCash - cashNeeded);
-    out.cash = Math.max(cashNeeded, minCash);
   }
   out.cpfUsed = cpfUsed; out.dp = dp; out.minCashPct = minCashPct;
   out.affordable = s.cash >= out.cash;
   out.loanConsidered = loanConsidered;
+  out.loanConsidered = loanTaken;
   out.minLoanRequested = minLoan;
 
   // --- monthly ---
   const rate = key === "bto" ? RULES.hdbRate : RULES.bankRate;
+  const rate = isHdbLoan ? RULES.hdbRate : (s.bankRate || RULES.bankRate);
   out.rate = rate;
   out.monthly = payment(out.loan, rate, ten);
   out.stressMonthly = payment(out.loan, stressUsed, ten);
-  out.tdsrNow = (out.stressMonthly + s.debts) / s.income;
-  out.msrNow = meta.hdb ? (out.stressMonthly + s.debts) / s.income : null;
-
-  // --- annual holding costs (true net-net ledger) ---
-  const av = meta.price * RULES.avProxy;
-  out.av = av;
-  out.ptaxOO = bands(RULES.ptOO, av);
-  out.ptaxNOO = bands(RULES.ptNOO, av);
-  const maint = meta.hdb ? RULES.hdbSCMo*12 : RULES.maintCondoMo*12;
-  out.interestYr1 = out.loan ? interestOver(out.loan, rate, ten, 1) : 0;
-  out.maint = maint;
-  out.repairs = meta.price * RULES.repairsPct;
-  out.insurance = RULES.insuranceYr;
-  out.holdingYr = out.ptaxOO + maint + out.repairs + out.insurance + out.interestYr1;
-
-  // --- rental (intents C/D) ---
-  out.rentYrNet = 0; out.rentalDetail = null;
-  if (s.intent === "C" || s.intent === "D"){
-    const metaRent = (key === "hdb") ? (s.rentHdb || 0)
-             : (key === "bto")  ? 0
-             : (key === "new"  ? (s.rentCondo || 0)
-             : (s.rentRes || 0));
-    const grossYr = metaRent * 12;
-    if (grossYr > 0){
-      const wait = meta.wait;
-      const rentYr1 = (key === "hdb" && wait > 0 && 0 < wait) ? 0 : grossYr; // HDB MOP phase-out
-      if (rentYr1 > 0){
-        const vacancy = rentYr1 * (RULES.vacancyMo/12);
-        const letting = rentYr1 * RULES.lettingPct;
-        const mgmt = s.managed === "yes" ? rentYr1 * RULES.mgmtPct : 0;
-        const lsd = rentYr1 * (RULES.leaseDuty * (RULES.leaseMonths || 24) / 2);
-        const landlordUpkeep = rentYr1 * .04;
-        const ptax = key === "hdb" ? out.ptaxNOO : out.ptaxOO;
-        const actualExpenses = letting + mgmt + lsd + landlordUpkeep + ptax + out.interestYr1 + maint + out.repairs + out.insurance;
-        const deemedTaxable = rentYr1 * (1 - RULES.deemedRent);
-        const actualTaxable = Math.max(0, rentYr1 - actualExpenses);
-        const useDeemed = deemedTaxable <= actualTaxable;
-        const taxable = useDeemed ? deemedTaxable : actualTaxable;
-        const tax = taxable * marginalRate(s.income*12 + taxable);
-        const cashOut = vacancy + letting + mgmt + lsd + landlordUpkeep + ptax + maint + out.repairs + out.insurance;
-        out.rentYrNet = rentYr1 - cashOut - tax;
-        out.rentalDetail = {grossYr:rentYr1, cashOut:cashOut, tax:tax, useDeemed:useDeemed,
-                            vacancy:vacancy, letting:letting, mgmt:mgmt, lsd:lsd, ptax:ptax, mopPhaseout:(key==="hdb")};
-      }
-    }
-  }
-
-  // --- exit / P&L at horizon H ---
-  out.exit = null;
-  if (meta.price > 0){
-    const sale = meta.price * Math.pow(1 + meta.cagr/100, H);
-    const outstanding = balanceAfter(out.loan, rate, ten, Math.min(H, ten));
-    const ssd = sale * ssdRate(H);
-    const agent = sale * RULES.agentExitPct;
-    const sellLegal = RULES.legalSell;
-    const cpfRefund = cpfUsed * Math.pow(1 + RULES.cpfAccrued, H);
-    const netProceed = sale - outstanding - ssd - agent - sellLegal - cpfRefund;
-    const acquisition = out.duty + RULES.legalBuy + RULES.valuation;
-    const holdingTotal = out.holdingYr * H;
-    const waitRent = meta.wait * 12 * s.curRent;
-    const rentalTotal = out.rentYrNet * Math.max(0, H - meta.wait);
-    const pnl = netProceed + rentalTotal - acquisition - holdingTotal - waitRent;
-    out.exit = {sale:sale, outstanding:outstanding, ssd:ssd, agent:agent, sellLegal:sellLegal,
-                cpfRefund:cpfRefund, netProceed:netProceed, acquisition:acquisition,
-                holdingTotal:holdingTotal, waitRent:waitRent, rentalTotal:rentalTotal, pnl:pnl};
-  }
-
-  // --- risk flags ---
-  const flags = [];
-  if (meta.wait > 0) flags.push("Wait " + meta.wait + "y for T.O.P./ballot - rent-during-wait " + sgd(meta.wait*12*s.curRent));
-  if (H < 4) flags.push("SSD exposure: selling within 4 yrs of purchase (" + pct(ssdRate(H)) + ")");
-  if (L.factor < 1) flags.push("CPF age-95 rule: lease covers youngest buyer to age " + L.coverAge + " - usable OA cut to " + pct(L.factor));
-  if (L.lease < RULES.cpfMinLease) flags.push("Remaining lease under 20 yrs - CPF cannot be used");
-  if (!out.affordable) flags.push("Cash shortfall " + sgd(out.cash - s.cash));
-  if (out.absd > 0) flags.push("ABSD " + pct(absdRate) + " = " + sgd(out.absd));
   if (key === "hdb") flags.push("COV risk: price vs valuation");
   if (s.intent === "C" && meta.hdb) flags.push("HDB: whole-flat renting only after 5y MOP");
   if (key === "new") flags.push("Progressive payments until T.O.P.; bank re-assesses at drawdown");
   if (key === "bto" && tenCap < s.tenure) flags.push("HDB loan tenure capped at " + ten + "y (" + tenCapWhy + ")");
+  if (tenCap < s.tenure) flags.push("Loan tenure capped at " + ten + "y (" + tenCapWhy + ")");
+  if (loanFallback) flags.push(loanFallback);
+  if (L.lease - H < 30) flags.push("Remaining lease " + Math.max(0, L.lease - H) + "y at exit (year " + H + ") - short leases transact at a discount");
+  if (out.loanShortOfLtv > 1) flags.push("TDSR/MSR caps the loan " + sgd(out.loanShortOfLtv) + " below max LTV - the extra downpayment comes from CPF, then cash");
   if (out.lowLtv) flags.push("Lower LTV tier: tenure >25/30y or joint age + tenure > 65 (MAS)");
   if (s.owned > 0 && meta.hdb) flags.push("Existing property: dispose within 6 months of purchase; no grants (wait-out removed 27 Jul 2026)");
   out.flags = flags;
-
-  return out;
-}
-
-/* ================= scoring ================= */
-function score(paths, s){
-  const w = RULES.weights[s.intent];
-  const ok = paths.filter(p => p.eligible && p.exit);
-  if (!ok.length) return;
-  const lowIsGood = (vals) => { const min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
-    return x => max === min ? 1 : 1 - (x - min)/(max - min); };
-  const highIsGood = (vals) => { const min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
-    return x => max === min ? 1 : (x - min)/(max - min); };
-
-  const up = lowIsGood(ok.map(p => p.cash));
-  const mo = lowIsGood(ok.map(p => p.monthly));
-  const ho = lowIsGood(ok.map(p => p.holdingYr));
-  const ex = highIsGood(ok.map(p => p.exit.pnl));
-  const re = highIsGood(ok.map(p => p.rentYrNet));
-  const rk = highIsGood(ok.map(p => -p.flags.length));
-
-  ok.forEach(p => {
-    p.score = 100 * (w.upfront*up(p.cash) + w.monthly*mo(p.monthly) + w.holding*ho(p.holdingYr)
-                  + w.exit*ex(p.exit.pnl) + w.rental*re(p.rentYrNet) + w.risk*rk(-p.flags.length));
-  });
-  paths.forEach(p => { if (!p.eligible || !p.exit) p.score = null; });
-  ok.sort((a,b) => b.score - a.score);
-  ok.forEach((p,i) => { p.rank = i+1; });
-}
-
-/* ================= state & navigation ================= */
-const state = {intent:"A", horizon:10};
-
-function showView(v){
-  const ids = {dash:"view-dash", cmp:"view-cmp", bto:"view-bto", hdb:"view-hdb", new:"view-new", res:"view-res"};
-  Object.keys(ids).forEach(k => { const el = $("#" + ids[k]); if (el) el.hidden = (k !== v); });
-  const nav = document.querySelectorAll("#mainNav a[data-view]");
-  nav.forEach(a => { a.classList.toggle("active", a.getAttribute("data-view") === v); });
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-function pickIntent(btn){
-  state.intent = btn.dataset.intent;
-  document.querySelectorAll(".intent").forEach(b =>
-    b.setAttribute("aria-pressed", String(b === btn)));
-  const rh = $("#rentHint");
-  if (rh) rh.style.opacity = (state.intent === "C" || state.intent === "D") ? "1" : ".55";
-  if (lastRun !== null && lastRun !== undefined) safeRender();
 }
 function pickHorizon(h, refresh){
   state.horizon = h;
   document.querySelectorAll("#horizons .chip, #horizons2 .chip").forEach(c =>
+  document.querySelectorAll("#horizons .chip").forEach(c =>
     c.setAttribute("aria-pressed", String(+c.dataset.h === h)));
+  const hn = $("#horizonNum");
+  if (hn && String(hn.value) !== String(h)) hn.value = h;
+  const he = $("#horizonEcho");
+  if (he) he.textContent = h + " yrs - one holding period, set on the Dashboard";
+  const hi = $("#hzInline");
+  if (hi) hi.textContent = h;
   if (refresh) safeRender();
 }
 
-/* ================= read inputs ================= */
-function readState(){
-  const rawT = String($("#tenure").value == null ? "" : $("#tenure").value).trim();
-  const tenure = rawT === "" ? 30 : clamp(Math.round(parseFloat(rawT) || 0), 0, 35);
-  const p2on = $("#p2enable").value === "yes";
-  const res1 = $("#residency").value || "sc";
-  const res2 = p2on ? ($("#residency2").value || res1) : res1;
-  const age1 = v("age"), age2 = p2on ? v("age2") : 0;
-  const inc1 = v("income"), inc2 = p2on ? v("income2") : 0;
-  const totalInc = inc1 + inc2;
-  // MAS: income-weighted average age (joint bank LTV / TDSR)
-  const wAge = totalInc > 0 ? (age1*inc1 + age2*inc2)/totalInc : age1;
-  // HDB loan: plain average age of applicants (65 - avg age tenure cap)
-  const avgAge = p2on ? (age1 + age2)/2 : age1;
-  // CPF age-95 test uses the YOUNGEST buyer
-  const youngest = p2on ? Math.min(age1, age2) : age1;
-  // ABSD: conservative - highest-rate profile among all buyers applies
-  const rank = {sc:0, pr:1, ff:2};
-  const absdProfile = rank[res2] > rank[res1] ? res2 : res1;
-  const ownedRaw = parseInt($("#owned").value, 10);
-  const owned = isNaN(ownedRaw) ? 0 : Math.max(0, ownedRaw);
-  const leaseRaw = parseFloat($("#lease").value);
-  const remainingLease = isNaN(leaseRaw) ? 99 : clamp(Math.round(leaseRaw), 1, 99);
   const flatType = $("#flatType").value === "big" ? "big" : "small";
   const phgVal = $("#phg").value;
   const phg = (phgVal === "near" || phgVal === "with") ? phgVal : "none";
+  const bankRateRaw = String($("#bankRate").value == null ? "" : $("#bankRate").value).trim();
+  const bankRatePct = bankRateRaw === "" ? RULES.bankRate * 100
+    : clamp(parseFloat(bankRateRaw) || (RULES.bankRate * 100), 0.1, 15);
+  const lt = id => String($(id).value == null ? "" : $(id).value).toLowerCase() === "bank" ? "bank" : "hdb";
+  const ltBto = lt("#loanTypeBto"), ltHdb = lt("#loanTypeHdb");
   return {
     intent: state.intent, horizon: state.horizon,
     residency: res1, residency2: res2, absdProfile: absdProfile,
-    allSC: res1 === "sc" && (!p2on || res2 === "sc"),
-    anyFF: res1 === "ff" || (p2on && res2 === "ff"),
-    scPr: (res1 === "sc" && res2 === "pr") || (res1 === "pr" && res2 === "sc"),
-    atLeastOneSC: res1 === "sc" || res2 === "sc",
-    p2on: p2on, p2: p2on ? {res:res2, age:age2, inc:inc2} : null,
-    age: wAge, avgAge: avgAge, youngest: youngest, age1: age1, age2: age2,
-    income: totalInc, debts: v("debts"),
-    cash: v("cash"), cpf: v("cpf"), owned: owned, curRent: v("curRent"),
-    tenure: tenure, solo: !p2on,
     single: ($("#single").value === "yes" && !p2on) ? "yes" : "no",
     remainingLease: remainingLease, flatType: flatType, phg: phg,
     managed: $("#managed").value,
+    bankRate: bankRatePct / 100, bankRatePct: bankRatePct,
+    loanBto: ltBto, loanHdb: ltHdb,
     rentHdb: v("rentHdb"), rentCondo: v("rentCondo"), rentRes: v("rentRes"),
     pBto: v("pBto"), pHdb: v("pHdb"), pNew: v("pNew"), pRes: v("pRes"),
     showBto: $("#showBto").checked, showHdb: $("#showHdb").checked,
-    showNew: $("#showNew").checked, showRes: $("#showRes").checked,
     cBto: v("cBto"), cHdb: v("cHdb"), cNew: v("cNew"), cRes: v("cRes")
   };
 }
@@ -973,86 +743,22 @@ function readResultsCagr(s){
 
 /* ================= render ================= */
 let lastRun = null;
-
-let visCount = 4; // visible path columns; row() group spans use it
-function row(label, sub, vals, opts){
-  opts = opts || {};
-  const subs = opts.sub || sub || [];
-  const cells = vals.map((x, i) => {
-    if (x === null || x === undefined) return "<td>-</td>";
-    const content = typeof x === "object" ? x.html : x;
-    const isWin = typeof x === "object" && x.win;
-    const small = subs[i] ? "<small>" + subs[i] + "</small>" : "";
-    return "<td class=\"" + (isWin ? "win" : "") + "\">" + content + small + "</td>";
-  }).join("");
-  const g = opts.group ? "<tr class=\"group\"><td colspan=\"" + (1 + visCount) + "\">" + opts.group + "</td></tr>" : "";
-  return g + "<tr><td>" + label + "</td>" + cells + "</tr>";
-}
-function best(vals, higher){
-  const nums = vals.map(x => typeof x === "number" ? x : null);
-  const valid = nums.filter(x => x !== null);
-  if (!valid.length) return [];
-  const target = higher ? Math.max.apply(null, valid) : Math.min.apply(null, valid);
-  return nums.map(x => x === target && valid.length > 1);
 }
 
 function render(){
   let s = readResultsCagr(readState());
+  let s = readState();
   lastRun = s;
   const paths = ["bto","hdb","new","res"].map(k => computePath(k, s));
   score(paths, s);
-
-  // only visible paths are displayed / recommended
-  const visPaths = paths.filter(p => {
-    if (p.key === "bto") return s.showBto;
-    if (p.key === "hdb") return s.showHdb;
-    if (p.key === "new") return s.showNew;
-    if (p.key === "res") return s.showRes;
-    return true;
-  });
-  // header columns must follow visibility (static thead would misalign)
-  visCount = visPaths.length;
-  const visKeys = visPaths.map(p => p.key);
-  [["cmpHead0", null]].concat(["bto","hdb","new","res"].map(k => ["cmpHead" + k.charAt(0).toUpperCase() + k.slice(1), k]))
-    .forEach(([id, key]) => {
-      const el = $("#" + id);
-      if (el) el.style.display = (!key || visKeys.indexOf(key) >= 0) ? "" : "none";
-    });
-
-  // ---- verdict ----
-  const winner = visPaths.filter(p => p.rank === 1)[0];
-  const titleEl = $("#vTitle"), whyEl = $("#vWhy");
-  if (winner){
-    $("#vRank").textContent = "#1";
-    titleEl.textContent = winner.name + " - best fit for your intent";
-    whyEl.textContent =
-      "Score " + winner.score.toFixed(0) + "/100. Upfront cash " + sgd(winner.cash) +
-      " - monthly " + sgd(winner.monthly) + " - modelled net at year " + s.horizon +
-      ": " + sgd(winner.exit.pnl) + " (CAGR " + winner.cagr + "%, all-in costs included). " +
-      "Eligibility: " + winner.why;
-  } else {
-    $("#vRank").textContent = "-";
-    titleEl.textContent = "No eligible path with the current inputs";
-    whyEl.textContent = "Adjust residency, income or prices - none of the visible paths passed eligibility + funds checks.";
-  }
-
-  // ---- table ----
-  const money = x => sgd(x);
-  const winM = (vals, higher) => best(vals, higher);
-  const num = (p, f) => p.eligible ? f(p) : null;
-
-  let html = "";
-  html += row("Eligibility", null, visPaths.map(p =>
-    p.eligible ? {html:"<span class=\"tag ok\">Eligible</span>", win:false}
-               : {html:"<span class=\"tag no\">No</span>", win:false}),
-    {group:"Eligibility &amp; rules"});
-  html += row("The rule that decides it", null, visPaths.map(p =>
     "<span style=\"font-size:11.5px;color:#45526b\">" + p.why + "</span>"));
 
   const m1 = winM(visPaths.map(p => num(p, x => x.price)), false);
   html += row("Expected price", null, visPaths.map((p,i) =>
+  html += row("Buying price (expected)", visPaths.map(p => p.eligible ? "entry price for this path" : null), visPaths.map((p,i) =>
     p.eligible ? (m1[i] ? {html:money(p.price), win:true} : money(p.price)) : "-"),
     {group:"Upfront cash"});
+    {group:"Buying price"});
 
   const m2 = winM(visPaths.map(p => num(p, x => x.grant)), true);
   html += row("Grants (indicative)", visPaths.map(p => p.eligible ? p.grantDetail : null),
@@ -1063,430 +769,443 @@ function render(){
 
   const m3 = winM(visPaths.map(p => num(p, x => x.cash)), false);
   html += row("Cash needed after CPF &amp; grants", ["min-cash rules applied",null,null,null],
+  html += row("Upfront cash needed", ["funding order: loan at max LTV -&gt; CPF -&gt; cash",null,null,null],
     visPaths.map((p,i) => p.eligible ? (m3[i] ? {html:money(p.cash), win:true} :
       (p.affordable ? money(p.cash) : {html:"<span class=\"tag no\">" + money(p.cash) + "</span>", win:false})) : "-"));
 
-  html += row("You have enough cash?", null, visPaths.map(p =>
-    !p.eligible ? "-" : (p.affordable ? "<span class=\"tag ok\">Yes</span>" : "<span class=\"tag no\">Short " + sgd(p.cash - s.cash) + "</span>")));
-  html += row("Minimum cash reserve + $100k loan floor", [null,null,null,null], visPaths.map(p =>
-    p.eligible ? (p.minLoanRequested ? sgd(p.minLoanRequested) + " - reserve " + sgd(p.minCash) : "reserve " + sgd(p.minCash)) : "-"));
-
-  html += row("CPF OA usable after age-95 lease test", visPaths.map(p =>
     p.eligible ? "youngest " + s.youngest + " + lease " + p.lease + "y = covers to age " + p.leaseCoverAge : null),
     visPaths.map(p => p.eligible ? money(p.cpfUsable) +
       (p.cpfFactor < 1 ? "<small>pro-rated x" + pct(p.cpfFactor) + " of " + money(s.cpf) + "</small>"
                        : "<small>full " + money(s.cpf) + " usable</small>") : "-"));
+                       : "<small>full " + money(s.cpf) + " usable</small>") : "-"),
+    {group:"CPF used &amp; grants"});
   html += row("CPF OA used for downpayment", null, visPaths.map(p => p.eligible ? money(p.cpfUsed) : "-"));
 
   html += row("Loan amount", ["capacity vs LTV - lower wins",null,null,null], visPaths.map(p =>
     p.eligible ? money(p.loanConsidered) + "<small>binding: " + p.binding + (p.minLoanRequested ? " - &gt;=" + sgd(p.minLoanRequested) : "") + "</small>" : "-"),
     {group:"Loan &amp; monthly"});
+  const m2 = winM(visPaths.map(p => num(p, x => x.grant)), true);
+  html += row("Grants received (indicative)", visPaths.map(p => p.eligible ? p.grantDetail : null),
+    visPaths.map((p,i) => p.eligible ? (m2[i] ? {html:money(p.grant), win:true} : money(p.grant)) : "-"));
+
+  html += row("Remaining lease now / at exit", visPaths.map(p =>
+    p.eligible ? "youngest buyer " + s.youngest + " - lease is capped against every path" : null),
+    visPaths.map(p => p.eligible ? p.lease + "y now &rarr; " + Math.max(0, p.lease - s.horizon) + "y in year " + s.horizon : "-"));
+
+  html += row("Loan type", visPaths.map(p => p.eligible && p.loanFallback ? "requested HDB loan" : null),
+    visPaths.map(p => p.eligible ? p.loanTypeLabel +
+      (p.loanFallback ? "<small>" + p.loanFallback + "</small>"
+                      : (p.loanType === "bank" ? "<small>rate editable on the Dashboard - moves monthly</small>"
+                                               : "<small>HDB fixed rate</small>")) : "-"),
+    {group:"Loan taken &amp; monthly"});
+
+  html += row("Loan amount", ["1st of the funding order - target max LTV",null,null,null], visPaths.map(p =>
+    p.eligible ? money(p.loanConsidered) + "<small>binding: " + p.binding + " - max LTV " + money(p.loanTargetLtv) +
+      (p.loanShortOfLtv > 1 ? " (TDSR/MSR leaves " + money(p.loanShortOfLtv) + ")" : "") + "</small>" : "-"));
 
   html += row("Loan tenure applied", visPaths.map(p => p.eligible ? p.tenureCapWhy : null),
     visPaths.map(p => p.eligible ? p.tenureUsed + " yrs" : "-"));
 
-  const m4 = winM(visPaths.map(p => num(p, x => x.monthly)), false);
-  html += row("Monthly instalment", ["contract rate",null,null,null], visPaths.map((p,i) =>
-    p.eligible ? (m4[i] ? {html:money(p.monthly), win:true} : money(p.monthly)) : "-"));
-
-  html += row("Stressed monthly", visPaths.map(p => p.eligible ? "at " + pct(p.stressRate) : null),
-    visPaths.map(p => p.eligible ? money(p.stressMonthly) : "-"));
-  html += row("Stress TDSR / MSR usage", null, visPaths.map(p =>
-    p.eligible ? pct(p.tdsrNow) + (p.msrNow !== null ? " / " + pct(p.msrNow) : "") : "-"));
-
-  const m5 = winM(visPaths.map(p => num(p, x => x.holdingYr)), false);
-  html += row("Holding cost per year (all-in)", ["interest + property tax + maintenance + repairs + insurance",null,null,null],
-    visPaths.map((p,i) => p.eligible ? (m5[i] ? {html:money(p.holdingYr), win:true} : money(p.holdingYr)) : "-"),
-    {group:"Holding (net-net ledger)"});
-  html += row("- of which property tax", [null,null,null,null],
-    visPaths.map(p => p.eligible ? money(p.ptaxOO) + "<small>owner-occupied, AV est. " + money(p.av) + "</small>" : "-"));
-  html += row("- of which year-1 interest", null, visPaths.map(p => p.eligible ? money(p.interestYr1) : "-"));
-  html += row("Rent paid while waiting", [null,null,null,null],
-    visPaths.map(p => p.eligible ? money(p.exit.waitRent) + (p.wait ? "<small>" + p.wait + "y wait</small>" : "") : "-"));
-
-  const NH = s.horizon;
-  const m6 = winM(visPaths.map(p => num(p, x => x.exit.sale)), true);
-  html += row("Sale price in year " + NH, ["CAGR applied",null,null,null], visPaths.map((p,i) =>
-    p.eligible ? (m6[i] ? {html:money(p.exit.sale), win:true} : money(p.exit.sale) + "<small>CAGR " + p.cagr + "%</small>") : "-"),
-    {group:"Exit in year " + NH});
-
-  html += row("- Outstanding loan", null, visPaths.map(p => p.eligible ? "-" + money(p.exit.outstanding).slice(1) : "-"));
-  html += row("- SSD (4-yr window)", null, visPaths.map(p => p.eligible ? (p.exit.ssd > 0 ? "-" + money(p.exit.ssd).slice(1) : "S$0") : "-"));
-  html += row("- Agent (2%) + legal", null, visPaths.map(p => p.eligible ? "-" + money(p.exit.agent + p.exit.sellLegal).slice(1) : "-"));
-  html += row("- CPF refund + accrued 2.5%", null, visPaths.map(p => p.eligible ? "-" + money(p.exit.cpfRefund).slice(1) : "-"));
-
-  const m7 = winM(visPaths.map(p => num(p, x => x.exit.pnl)), true);
-  html += row("NET-NET P&amp;L by year " + NH, ["all costs in - duty, fees, holding, rental, tax",null,null,null],
-    visPaths.map((p,i) => p.eligible ?
-      (m7[i] ? {html:money(p.exit.pnl), win:true} : money(p.exit.pnl)) : "-"));
-
-  if (s.intent === "C" || s.intent === "D"){
-    const m8 = winM(visPaths.map(p => num(p, x => x.rentYrNet)), true);
-    html += row("Rental income net/yr", ["after vacancy, fees, property tax, income tax",null,null,null],
-      visPaths.map((p,i) => p.eligible ? (m8[i] ? {html:money(p.rentYrNet), win:true} : money(p.rentYrNet)) : "-"),
-      {group:"Investment"});
-    if (visPaths[0] && visPaths[0].rentalDetail)
-      html += row("Rental tax election", null, visPaths.map(p =>
-        p.eligible && p.rentalDetail ? (p.rentalDetail.useDeemed ? "deemed 15% expense" : "actual expenses") +
-          "<small>tax " + money(p.rentalDetail.tax) + "</small>" : "-"));
-  }
-
-  html += row("Risk flags", null, visPaths.map(p =>
-    !p.eligible ? "-" : (p.flags.length ? "<span class=\"tag warn\">" + p.flags.length + "</span> " +
-      "<span style=\"font-size:11px;line-height:1.55\">" + p.flags.slice(0, 3).join("<br/>") + "</span>"
-                : "<span class=\"tag ok\">clear</span>")),
-    {group:"Risks &amp; score"});
-
-  html += row("Score (intent-weighted)", [null,null,null,null], visPaths.map(p =>
-    p.score === null || p.score === undefined ? "-" :
-      (p.rank === 1 ? {html:"<b>" + p.score.toFixed(0) + "</b> - #" + p.rank, win:true}
-                    : p.score.toFixed(0) + " - #" + p.rank)));
-
-  $("#cmpBody").innerHTML = html;
-
-  // ---- recommendation banner (intent-aware) ----
-  const w = winner || visPaths[0];
-  const visited = visPaths.filter(p => p.eligible && p.exit);
-  const intentLabel = {A:"Settle in", B:"Step up", C:"Let it pay for itself", D:"Rent now, exit later"};
-  let why;
-  if (!w || !w.eligible || !w.exit) {
-    why = "None of the visible paths cleared eligibility + funds with these inputs - adjust residency, income or prices.";
-  } else if (w.exit.pnl >= 0) {
-    why = "Preferred: positive net-net P&L by year " + s.horizon + " (" + sgd(w.exit.pnl) + ") - it outperforms on exit value over your horizon.";
-  } else {
-    why = "Caution: negative net-net P&L by year " + s.horizon + " (" + sgd(w.exit.pnl) + ") - selling here loses value; extend the horizon or re-check inputs.";
-  }
-  const recHtml = (w && w.eligible && w.exit)
-    ? "<div class=\"verdict\" style=\"background:linear-gradient(135deg,#0c1526,#173467)\"><div class=\"rank\" style=\"color:#8fb6ff\">Your pick</div><div><h2>" +
-      w.name + " — #1 for &ldquo;" + intentLabel[s.intent] + "&rdquo; - " + why + "</h2></div></div>"
-    : "<div class=\"verdict\" style=\"background:linear-gradient(135deg,#0c1526,#173467)\"><div class=\"rank\" style=\"color:#8fb6ff\">Your pick</div><div><h2>No winner yet - " + why + "</h2></div></div>";
-  $("#cmpBody").insertAdjacentHTML("beforeend", recHtml);
-
-  let note;
-  const visitedSorted = visited.slice().sort((a,b) => b.exit.pnl - a.exit.pnl);
-  if (visitedSorted.length >= 2){
-    const gap = visitedSorted[0].exit.pnl - visitedSorted[1].exit.pnl;
-    const cagrGap = visitedSorted[1].cagr;
-    note = "Sensitivity: &ldquo;" + visitedSorted[0].name + "&rdquo; leads on net P&amp;L by " + sgd(gap) +
-      " over &ldquo;" + visitedSorted[1].name + "&rdquo; at " + s.horizon + " years. If &ldquo;" + visitedSorted[1].name +
-      "&rdquo; grew ~" + (cagrGap + 1).toFixed(1) + "%/yr more, the lead would flip - your CAGR inputs are editable above.";
-    const bto = paths[0];
-    if (bto.wait > 0 && s.curRent > 0 && s.showBto)
-      note += " Rent-during-wait of " + sgd(bto.exit.waitRent) + " is charged against BTO/new launch for their " + bto.wait + "-year build.";
-  } else {
     note = "Only one visible eligible path with these inputs - untick paths to compare alternatives.";
   }
   $("#sensNote").innerHTML = note;
+  const aiEl = $("#aiCmp");
+  if (aiEl){
+    const rankedAll = visPaths.filter(p => p.eligible && p.exit).slice().sort((a,b) => b.exit.pnl - a.exit.pnl);
+    const runnerAll = rankedAll.length > 1 ? (rankedAll[0] === w ? rankedAll[1] : rankedAll[0]) : null;
+    aiEl.innerHTML = aiDash(visPaths, s, w, runnerAll);
+  }
 
   // sync CAGR inputs into results bar
   $("#rBto").value = s.cBto; $("#rHdb").value = s.cHdb; $("#rNew").value = s.cNew; $("#rRes").value = s.cRes;
 
-  // shared borrower / age context line
-  const jointTxt = "Combined income " + sgd(s.income) + "/mo - income-weighted age " +
-    s.age.toFixed(1) + " (MAS joint formula) - average age " + s.avgAge.toFixed(1) +
-    " (HDB loan cap 65-age = " + Math.max(0, 65 - s.avgAge).toFixed(1) + "y) - youngest " + s.youngest +
-    " + lease " + s.remainingLease + "y covers to age " + (s.youngest + s.remainingLease) + " (CPF needs 95)" +
-    (s.p2on ? " - ABSD profile: " + s.absdProfile.toUpperCase() + " (higher-rate buyer, conservative)" : "");
-  $("#jointInfo").textContent = jointTxt;
-
-  // ---- dashboard bottom summary (toggles with profile & strategy) ----
-  renderDash(visPaths, s, w, why, note, jointTxt, recHtml);
-
   // ---- per-calculator views: locked dashboard strip + path detail ----
   ["bto","hdb","new","res"].forEach(k =>
     renderCalc(k, paths.filter(p => p.key === k)[0], s));
+    renderCalc(k, paths.filter(p => p.key === k)[0], s, visPaths));
+}
+
+/* path icons (inline SVG, no external deps) */
+  res: '<svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="4"/><path d="M13 12h8m-3 0v3m-3-3v2"/></svg>'
+};
+
+/* ================= AI-style analysis (rule-based, 100% client-side) ================= */
+/* Exact break-even growth: pnl = sale*(1 - SSD - agent%) - fixed costs, so solve for sale first. */
+function breakevenCagr(p, s){
+  if (!p || !p.exit || !(p.price > 0) || !(s.horizon > 0)) return null;
+  const H = s.horizon;
+  const keep = 1 - ssdRate(H) - RULES.agentExitPct;
+  if (keep <= 0.05) return null;
+  const K = p.exit.outstanding + p.exit.sellLegal + p.exit.cpfRefund +
+            p.exit.acquisition + p.exit.holdingTotal + p.exit.waitRent - p.exit.rentalTotal;
+  const saleStar = K / keep;
+  if (!(saleStar > 0)) return 0;
+  return (Math.pow(saleStar / p.price, 1 / H) - 1) * 100;
+}
+function aiPanel(inner){
+  return "<div class=\"ai\"><div class=\"aihead\"><span class=\"aibadge\">AI</span> Analysis &amp; advice" +
+    "<span class=\"ainote\">rule-based model - runs in your browser, no data leaves this page</span></div>" + inner + "</div>";
+}
+const INTENT_TXT = {A:"Settle in", B:"Step up", C:"Let it pay", D:"Rent then exit"};
+
+function aiDash(vis, s, w, runner){
+  const ok = vis.filter(p => p.eligible && p.exit);
+  if (!ok.length || !w || !w.exit)
+    return aiPanel("<p><b class=\"k\">Bottom line.</b> None of the ticked paths clear eligibility and funds with the current profile. " +
+      "Relax residency, age or income inputs, lower an expected price, or untick a path you do not want compared.</p>");
+  let h = "";
+  const be = breakevenCagr(w, s);
+  h += "<p><b class=\"k\">Verdict.</b> For &ldquo;" + INTENT_TXT[s.intent] + "&rdquo; over a single " + s.horizon +
+    "-year hold, <b>" + w.name + "</b> ranks #1 (score " + (w.score === null || w.score === undefined ? "n/a" : w.score.toFixed(0)) +
+    "/100) with a modelled net-net P&amp;L of <b>" + sgd(w.exit.pnl) + "</b> by year " + s.horizon +
+    (runner && runner.exit ? " - " + sgd(Math.abs(w.exit.pnl - runner.exit.pnl)) + " ahead of " + runner.name : "") + "." +
+    (w.exit.pnl >= 0 ? " That number is after duty, interest, fees, tax and rental."
+                     : " A negative figure means this hold does not pay for itself by year " + s.horizon + " - hold longer, or push the price down.") + "</p>";
+
+  const cheapest = ok.slice().sort((a,b) => a.cash - b.cash)[0];
+  const short = ok.filter(p => !p.affordable);
+  h += "<p><b class=\"k\">Affordability.</b> Easiest entry: <b>" + cheapest.name + "</b> at " + sgd(cheapest.cash) +
+    " up front + " + sgd(cheapest.monthly) + "/mth, against your " + sgd(s.cash) + " cash and " + sgd(s.cpf) + " CPF OA. " +
+    (short.length ? "<b>Cash warning:</b> " + short.map(p => p.name).join(", ") + (short.length > 1 ? " need" : " needs") +
+      " more cash than you hold - the gap is covered by extra CPF OA if available, otherwise cash."
+      : "Every ticked path fits your cash, and the loan is sized first at the maximum LTV.") + "</p>";
+
+  const hdbLoans = ok.filter(p => p.loanType === "hdb");
+  const bankLoans = ok.filter(p => p.loanType === "bank");
+  const fell = ok.filter(p => p.loanFallback);
+  h += "<p><b class=\"k\">Loan &amp; rate.</b> " +
+    (hdbLoans.length ? "HDB concessionary loan on " + hdbLoans.map(p => p.name).join(" &amp; ") + " (2.60% fixed, 75% LTV, stressed at 3%). " : "") +
+    (bankLoans.length ? "Bank loan on " + bankLoans.map(p => p.name).join(" &amp; ") + " at <b>" + pct(s.bankRate) +
+      "</b> p.a. - edit that Dashboard field monthly, since bank rates move (stressed at 4%). " : "") +
+    "Funding order is always loan (max LTV) &rarr; grants &rarr; CPF OA &rarr; cash. " +
+    (fell.length ? fell.map(p => p.name).join(", ") + " asked for an HDB loan but exceeded its income ceiling, so a bank loan was applied. " : "") +
+    (s.bankRate <= 2.6 ? "Your bank quote beats the HDB rate - check lock-in length and penalties before switching."
+                       : "The HDB loan at 2.60% is cheaper than that bank rate - check your eligibility first.") + "</p>";
+
+  const worstFactor = ok.length ? Math.min.apply(null, ok.map(p => p.cpfFactor)) : 1;
+  h += "<p><b class=\"k\">Lease &amp; CPF.</b> Your " + s.remainingLease + "-year lease covers the youngest buyer (age " + s.youngest +
+    ") only to " + (s.youngest + s.remainingLease) + ", while CPF's rule needs age 95. " +
+    (worstFactor < 1 ? "Usable OA is therefore pro-rated to " + pct(worstFactor) + " on these paths, and tenure can be lease-bound."
+                     : "Full CPF OA is usable and tenure is not lease-bound here.") +
+    " By year " + s.horizon + " the lease has run down to about " + Math.max(0, s.remainingLease - s.horizon) +
+    " years - plan the exit before it gets short, because buyers discount short leases.</p>";
+
+  const over = ok.filter(p => p.cagr > (RULES.histCagr[p.key] || 4.7) + 0.5);
+  h += "<p><b class=\"k\">Growth assumptions.</b> Defaults are the 2005-2025 averages (HDB ~5.0%/yr, private ~4.7-4.8%/yr) and every CAGR stays editable - the engine recalculates the moment you change one. " +
+    (over.length ? "<b>Optimistic:</b> " + over.map(p => p.name + " at " + p.cagr + "%").join(", ") +
+      " sit above history, so results will flatter you if growth reverts to trend. "
+      : "Your CAGRs sit at or below the long-run averages, so the forecast is deliberately conservative. ") +
+    (be === null ? "" : "<b>" + w.name + "</b> only needs <b>" + be.toFixed(1) + "%/yr</b> to break even by year " + s.horizon +
+      " - you assumed " + w.cagr + "%, so the margin runs " + (w.cagr >= be ? "in your favour." : "against you.")) + "</p>";
+
+  const tally = {};
+  ok.forEach(p => p.flags.forEach(f => { tally[f] = (tally[f] || 0) + 1; }));
+  const watch = Object.keys(tally).sort((a,b) => tally[b] - tally[a]).slice(0, 3);
+  h += "<p><b class=\"k\">Watch-outs.</b> " + (watch.length ? watch.join(" &middot; ") : "No major flags on the visible paths.") + "</p>";
+
+  const steps = [];
+  steps.push("Open <b>" + w.name + "</b> and stress the two inputs that move it most: expected price and CAGR.");
+  if (s.intent === "C" || s.intent === "D") steps.push("Enter the expected rent inside each calculator - strategies C and D only count rental income once it is set.");
+  if (s.remainingLease < 95 - s.youngest) steps.push("Ask HDB and the banks how the shorter lease affects CPF use and tenure; a longer lease gives a cleaner exit.");
+  steps.push("Get your HFE letter and a bank in-principle approval, then take a fresh rate quote - bank rates are refreshed monthly.");
+  steps.push("Confirm grants with HDB directly; the figures here are indicative.");
+  h += "<p><b class=\"k\">Do next.</b></p><ul><li>" + steps.join("</li><li>") + "</li></ul>";
+  h += "<div class=\"pills\"><span>#1 " + w.name + "</span><span>Net-net " + sgd(w.exit.pnl) + " by yr " + s.horizon + "</span>" +
+    "<span>Break-even CAGR " + (be === null ? "n/a" : be.toFixed(1) + "%") + "</span><span>Upfront cash " + sgd(w.cash) + "</span>" +
+    "<span>Monthly " + sgd(w.monthly) + "</span></div>";
+  return aiPanel(h);
+}
+
+function aiPath(p, s, vis){
+  if (!p.eligible || !p.exit)
+    return aiPanel("<p><b class=\"k\">Verdict.</b> " +
+      String(p.why || "This path does not qualify with the current profile.").replace(/</g, "&lt;") +
+      "</p><p>Fix it on the Dashboard (residency, age, income or price), or tick a different path under Paths to consider.</p>");
+  const others = (vis || []).filter(q => q.key !== p.key && q.eligible && q.exit);
+  const be = breakevenCagr(p, s);
+  const lead = others.length ? others.slice().sort((a,b) => b.exit.pnl - a.exit.pnl)[0] : null;
+  let h = "";
+
+  h += "<p><b class=\"k\">Verdict.</b> " + p.name + " scores <b>" +
+    (p.score === null || p.score === undefined ? "n/a" : p.score.toFixed(0) + "/100, rank #" + p.rank) +
+    "</b> for your &ldquo;" + INTENT_TXT[s.intent] + "&rdquo; strategy and nets <b>" + sgd(p.exit.pnl) + "</b> by year " + s.horizon +
+    " after every cost." + (lead ? " That is " +
+      (p.exit.pnl >= lead.exit.pnl ? sgd(p.exit.pnl - lead.exit.pnl) + " better than " : sgd(lead.exit.pnl - p.exit.pnl) + " behind ") +
+      lead.name + "." : "") + "</p>";
+
+  const pros = [], cons = [];
+  if (p.affordable) pros.push("upfront cash of " + sgd(p.cash) + " sits inside your " + sgd(s.cash));
+  else cons.push("cash shortfall of " + sgd(p.cash - s.cash));
+  if (p.grant > 0) pros.push(sgd(p.grant) + " of grants lower the price");
+  if (others.length && others.every(q => q.monthly > p.monthly)) pros.push("cheapest monthly instalment of the visible paths");
+  if (s.income > 0 && p.monthly / s.income < 0.25) pros.push("instalment uses only " + pct(p.monthly / s.income) + " of household income");
+  if (p.flags.length > 2) cons.push(p.flags.length + " risk flags - see the ledger below");
+  if (be !== null && p.cagr < be) cons.push("assumed growth " + p.cagr + "% sits below the " + be.toFixed(1) + "% break-even");
+  if (p.loanFallback) cons.push(p.loanFallback);
+  h += "<p><b class=\"k\">Read on this path.</b> " +
+    (pros.length ? "Strengths: " + pros.join("; ") + ". " : "") +
+    (cons.length ? "Weaknesses: " + cons.join("; ") + "." : "No weaknesses beyond the usual transaction costs.") + "</p>";
+
+  h += "<p><b class=\"k\">Financing.</b> " + p.loanTypeLabel + ", LTV " + pct(p.ltvRate) + " (max loan " + sgd(p.loanTargetLtv) +
+    "), tenure " + p.tenureUsed + " yrs, monthly " + sgd(p.monthly) + " (stressed " + sgd(p.stressMonthly) + " at " + pct(p.stressRate) +
+    "). Funding order: loan first, then grants, then CPF OA (" + sgd(p.cpfUsed) + " of " + sgd(p.cpfUsable) +
+    " usable), then cash (" + sgd(p.cash) + ").</p>";
+
+  h += "<p><b class=\"k\">Lease.</b> " + p.lease + " yrs now, about " + Math.max(0, p.lease - s.horizon) + " yrs at exit; the lease covers the " +
+    "youngest buyer to age " + p.leaseCoverAge + " (CPF needs 95)" +
+    (p.cpfFactor < 1 ? ", so usable OA is pro-rated to " + pct(p.cpfFactor) + "." : ", so full CPF is usable.") + "</p>";
+
+  const rent = p.key === "hdb" ? s.rentHdb : p.key === "new" ? s.rentCondo : p.key === "res" ? s.rentRes : 0;
+  const adv = [];
+  if ((s.intent === "C" || s.intent === "D") && !rent)
+    adv.push("Set an expected rent above - rental income and rental tax both feed the net-net P&amp;L.");
+  if (!p.affordable) adv.push("Close the " + sgd(p.cash - s.cash) + " cash gap with extra CPF OA, a lower price, or a smaller loan top-up.");
+  if (p.tenureCap < s.tenure) adv.push("Your requested " + s.tenure + "-yr tenure is capped at " + p.tenureUsed + " yrs (" + p.tenureCapWhy + ").");
+  if (p.grant === 0 && (p.key === "bto" || p.key === "hdb"))
+    adv.push("No grants are modelled here - check the income-ceiling and ownership rules in the ledger above.");
+  if (be !== null && p.cagr > be + 1)
+    adv.push("Growth is " + (p.cagr - be).toFixed(1) + " points above break-even - re-run with a lower CAGR to see the downside case.");
+  adv.push("Confirm everything with your HFE letter and a bank in-principle approval before paying any option fee.");
+  h += "<p><b class=\"k\">What to do.</b></p><ul><li>" + adv.join("</li><li>") + "</li></ul>";
+  h += "<div class=\"pills\"><span>Net-net " + sgd(p.exit.pnl) + "</span><span>Break-even CAGR " +
+    (be === null ? "n/a" : be.toFixed(1) + "%") + "</span><span>Cash " + sgd(p.cash) + "</span><span>Monthly " + sgd(p.monthly) + "</span></div>";
+  return aiPanel(h);
 }
 
 /* ================= dashboard bottom summary ================= */
 function renderDash(vis, s, w, why, note, jointTxt, recHtml){
   const el = $("#dashBody");
-  if (!el) return;
-  const cards = vis.map(p => {
-    const has = p.eligible && p.exit;
-    const numCls = !has ? " na" : (p.exit.pnl >= 0 ? "" : " neg");
-    const num = has ? sgd(p.exit.pnl) : "&mdash;";
-    const sc = (p.score === null || p.score === undefined) ? "n/a" : p.score.toFixed(0) + " &middot; #" + p.rank;
-    return "<div class=\"dcard" + (p.rank === 1 ? " top" : "") + "\">" +
-      "<div class=\"dt\"><b>" + p.name + "</b>" +
+      "<div class=\"dt\"><span class=\"ic ic-" + p.key + "\">" + (ICONS[p.key] || "") + "</span><b>" + p.name + "</b>" +
       (p.eligible ? "<span class=\"tag ok\">Eligible</span>" : "<span class=\"tag no\">Not eligible</span>") + "</div>" +
       "<div class=\"dnum" + numCls + "\">" + num + "</div>" +
       "<div class=\"dsub\">net-net P&amp;L by year " + s.horizon + "</div>" +
+      "<div class=\"dsub\">net-net P&amp;L by year " + s.horizon + " &middot; buying price " + (p.eligible ? sgd(p.price) : "-") + "</div>" +
       "<div class=\"dlines\">" +
         "<div>Upfront cash <b>" + (p.eligible ? sgd(p.cash) : "-") + "</b></div>" +
         "<div>Monthly <b>" + (p.eligible ? sgd(p.monthly) : "-") + "</b></div>" +
+        "<div>CPF used <b>" + (p.eligible ? sgd(p.cpfUsed) : "-") + "</b></div>" +
         "<div>Grants <b>" + (p.eligible ? sgd(p.grant) : "-") + "</b></div>" +
+        "<div>Loan taken <b>" + (p.eligible ? sgd(p.loan) : "-") + "</b></div>" +
+        "<div>Monthly <b>" + (p.eligible ? sgd(p.monthly) : "-") + "</b></div>" +
         "<div>Score <b>" + sc + "</b></div>" +
       "</div>" +
       "<button class=\"chip\" data-open=\"" + p.key + "\">Open calculator &rarr;</button>" +
-    "</div>";
-  }).join("");
-
-  const miss = [];
-  if (s.intent === "C" || s.intent === "D"){
-    const zero = vis.filter(p => (p.key === "hdb" && !s.rentHdb) || (p.key === "new" && !s.rentCondo) || (p.key === "res" && !s.rentRes));
-    if (zero.length) miss.push("Set the expected rent inside each calculator (" + zero.map(p => p.name).join(", ") + ") - strategy " + s.intent + " counts rental income in the net-net result.");
-  }
-  if (s.phg === "none" && s.showHdb)
-    miss.push("Living with or within 4 km of parents? Set the Proximity Housing Grant in the Resale HDB calculator (up to S$20k).")
-  if (s.remainingLease < 95 - s.youngest)
-    miss.push("Lease covers the youngest buyer to age " + (s.youngest + s.remainingLease) + " (CPF needs 95) - CPF use and HDB loan tenure are pro-rated for you.");
   miss.push("Grants are indicative - confirm with your HFE letter. Refine price, CAGR, flat type and rent inside each calculator.");
 
   let h = recHtml || "";
   h += "<div class=\"dgrid\">" + (cards || "<p style=\"color:var(--muted);margin:4px 0\">No paths selected - tick at least one path under Profile &amp; strategy.</p>") + "</div>";
+  h += "<div class=\"dgrid\">" + (cards || "<p style=\"color:var(--muted);margin:4px 0\">No paths selected - tick at least one path in step 1 (Paths to consider) above.</p>") + "</div>";
+  const ranked = vis.filter(p => p.eligible && p.exit).slice().sort((a,b) => b.exit.pnl - a.exit.pnl);
+  const runner = ranked.length > 1 ? (ranked[0] === w ? ranked[1] : ranked[0]) : null;
+  h += aiDash(vis, s, w, runner);
   h += "<div class=\"sens\" style=\"margin:8px 0 0\">" + note + "</div>";
   h += "<div class=\"sens\" style=\"margin:8px 0 0\">" + jointTxt + "</div>";
   h += "<div class=\"row\" style=\"margin-top:12px\">" +
-    "<button class=\"chip\" data-view=\"cmp\">Open full comparison &rarr;</button>" +
-    "<button class=\"chip\" data-dl=\"1\">Download CSV</button></div>";
-  h += "<div class=\"miss\"><b>To sharpen the picture:</b><ul><li>" + miss.join("</li><li>") + "</li></ul></div>";
-  el.innerHTML = h;
-}
-
-/* ================= per-calculator views (locked dashboard data) ================= */
-function lockedHtml(s){
-  const row = (k, val) => "<div class=\"lk\"><span>" + k + "</span><b>" + val + "</b></div>";
-  const intentLabel = {A:"Settle in (long run)", B:"Step up (~5 yrs)", C:"Let it pay (tenant it)", D:"Rent then exit (5-10 yr flip)"};
-  const inc1 = s.p2on && s.p2 ? s.income - s.p2.inc : s.income;
-  let h = "";
-  h += row("Buyers", s.p2on ? "2 buyers (joint)" : "1 buyer (solo)");
-  h += row("Buyer 1", s.residency.toUpperCase() + " &middot; age " + s.age1 + " &middot; " + sgd(inc1) + "/mo");
-  if (s.p2on) h += row("Buyer 2", s.residency2.toUpperCase() + " &middot; age " + s.age2 + " &middot; " + sgd(s.p2.inc) + "/mo");
-  h += row("Combined income", sgd(s.income) + "/mo");
-  h += row("Debts / cash / CPF OA", sgd(s.debts) + " / " + sgd(s.cash) + " / " + sgd(s.cpf));
-  h += row("Properties owned", String(s.owned));
   h += row("Rent paid now", sgd(s.curRent) + "/mo");
   h += row("Remaining lease", s.remainingLease + " yrs (covers youngest to age " + (s.youngest + s.remainingLease) + ")");
   h += row("Loan tenure requested", s.tenure + " yrs");
+  h += row("Loans &amp; rate", "BTO: " + (s.loanBto === "bank" ? "bank loan" : "HDB loan 2.60%") +
+    " &middot; Resale HDB: " + (s.loanHdb === "bank" ? "bank loan" : "HDB loan 2.60%") +
+    " &middot; condo: bank loan @ " + pct(s.bankRate));
   h += row("Strategy / horizon", intentLabel[s.intent] + " &middot; " + s.horizon + " yrs");
   h += "<div class=\"locknote\">Locked to your Dashboard - change these there so every calculator stays aligned. " +
        "<button class=\"chip\" data-view=\"dash\">Open Dashboard &rarr;</button></div>";
-  return h;
-}
-
-function missFor(key, s){
-  const items = [];
-  const rentZero = (key === "hdb" && !s.rentHdb) || (key === "new" && !s.rentCondo) || (key === "res" && !s.rentRes);
-  if ((s.intent === "C" || s.intent === "D") && rentZero && key !== "bto")
-    items.push("Expected rent is S$0 - add a figure if you plan to let it; rental income and rental tax flow into the net-net P&amp;L.");
   if (key === "hdb"){
     if (s.phg === "none") items.push("Proximity grant not set - living with/within 4 km of parents adds up to S$20k.");
     items.push("Confirm flat type - it sizes the Family/Singles Grant (2-4 room vs 5-room+). ");
+    items.push("Loan type is picked on the Dashboard: HDB concessionary (2.60%, household income up to S$16,000) or a bank loan at your editable rate.");
   }
   if (key === "bto") items.push("BTO uses an HDB loan (2.60%) - tenure is capped at min(25 yrs, 65 - average age, lease) and LTV is 75%.");
+  if (key === "bto") items.push("Loan type is picked on the Dashboard: HDB concessionary (2.60%, tenure min(25 yrs, 65 - average age, lease), LTV 75%) or a bank loan that floats with market rates.");
   if (key === "new") items.push("New launches pay progressively until T.O.P.; budget the wait - rent-during-wait is charged automatically if you pay rent now.");
   items.push("Price and CAGR above are the only editable assumptions here - eligibility, grants, loan and CPF all come locked from your Dashboard.");
+  items.push("Price and CAGR above are the only editable assumptions here - eligibility, grants, loan type, rate and CPF all come locked from your Dashboard.");
   return "<b>Add detail for a sharper picture:</b><ul><li>" + items.join("</li><li>") + "</li></ul>";
 }
 
 function renderCalc(key, p, s){
+function renderCalc(key, p, s, vis){
   const lk = $("#lock-" + key);
   if (lk) lk.innerHTML = lockedHtml(s);
   const ms = $("#miss-" + key);
-  if (ms) ms.innerHTML = missFor(key, s);
-  const out = $("#out-" + key);
-  if (!out || !p) return;
-
-  const escWhy = String(p.why || "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  if (!p.eligible){
-    out.innerHTML = "<div class=\"verdict\"><div class=\"rank\">This path</div><h2>" + p.name +
-      " - not eligible</h2><p>" + escWhy + "</p><p>Fix this in the Dashboard (residency, age, income) or untick this path under Paths to consider.</p></div>";
-    return;
-  }
-
-  const NH = s.horizon;
-  const t = (label, val, sub) => "<tr><td>" + label + "</td><td>" + val + (sub ? "<small>" + sub + "</small>" : "") + "</td></tr>";
-  const g = name => "<tr class=\"group\"><td colspan=\"2\">" + name + "</td></tr>";
   const pnlGood = p.exit && p.exit.pnl >= 0;
 
+  const MI = {
+    pnl: '<svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+    price: '<svg viewBox="0 0 24 24"><path d="M20.6 13.4 12 4.8H4.8V12l8.6 8.6a2 2 0 0 0 2.8 0l4.4-4.4a2 2 0 0 0 0-2.8z"/><circle cx="8.6" cy="8.6" r="1.3"/></svg>',
+    cash: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14.5h2"/></svg>',
+    cpf: '<svg viewBox="0 0 24 24"><path d="M4 9a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2a5 5 0 0 1-1 3v3a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3a5 5 0 0 1-1-3z"/><path d="M9 9h6"/></svg>',
+    gift: '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2.2 0-4-1-4-2.5S9.6 3 12 5.2C14.4 3 16 4 16 5.5S14.2 8 12 8z"/></svg>',
+    loan: '<svg viewBox="0 0 24 24"><path d="M3 10 12 4l9 6"/><path d="M6 10v8m4-8v8m4-8v8m4-8v8"/><path d="M3 20h18"/></svg>',
+    mon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+    gift: '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2.2 0-4-1-4-2.5S9.6 3 12 5.2C14.4 3 16 4 16 5.5S14.2 8 12 8z"/></svg>'
+    sale: '<svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+    pnl: '<svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>'
+  };
+  const chip = (icon) => "<span class=\"mchip\">" + icon + "</span>";
+  const card = (kind, label, value, sub, vcls) =>
+    "<div class=\"mcard acc-" + key + "\"><div class=\"k\"><span class=\"mchip k-" + kind + "\">" + MI[kind] + "</span>" + label + "</div>" +
+    "<div class=\"v " + (vcls || "") + "\">" + value + "</div><div class=\"s\">" + sub + "</div></div>";
   let m = "<div class=\"dgrid4\">";
-  m += "<div class=\"mcard\"><div class=\"k\">Net-net P&amp;L by year " + NH + "</div><div class=\"v " + (pnlGood ? "good" : "bad") + "\">" +
+  m += "<div class=\"mcard acc-" + key + "\"><div class=\"k\">" + chip(MI.pnl) + "Net-net P&amp;L by year " + NH + "</div><div class=\"v " + (pnlGood ? "good" : "bad") + "\">" +
     (p.exit ? sgd(p.exit.pnl) : "-") + "</div><div class=\"s\">all costs in - duty, interest, tax, fees, rental</div></div>";
-  m += "<div class=\"mcard\"><div class=\"k\">Upfront cash needed</div><div class=\"v\">" + sgd(p.cash) + "</div><div class=\"s\">" +
+  m += "<div class=\"mcard acc-" + key + "\"><div class=\"k\">" + chip(MI.cash) + "Upfront cash needed</div><div class=\"v\">" + sgd(p.cash) + "</div><div class=\"s\">" +
     (p.affordable ? "you have " + sgd(s.cash) + " - enough" : "shortfall " + sgd(p.cash - s.cash)) + "</div></div>";
-  m += "<div class=\"mcard\"><div class=\"k\">Monthly instalment</div><div class=\"v\">" + sgd(p.monthly) + "</div><div class=\"s\">at " + pct(p.rate) + " - stressed " + sgd(p.stressMonthly) + " @ " + pct(p.stressRate) + "</div></div>";
-  m += "<div class=\"mcard\"><div class=\"k\">Grants (indicative)</div><div class=\"v\">" + sgd(p.grant) + "</div><div class=\"s\">score " +
+  m += "<div class=\"mcard acc-" + key + "\"><div class=\"k\">" + chip(MI.mon) + "Monthly instalment</div><div class=\"v\">" + sgd(p.monthly) + "</div><div class=\"s\">at " + pct(p.rate) + " - stressed " + sgd(p.stressMonthly) + " @ " + pct(p.stressRate) + "</div></div>";
+  m += "<div class=\"mcard acc-" + key + "\"><div class=\"k\">" + chip(MI.gift) + "Grants (indicative)</div><div class=\"v\">" + sgd(p.grant) + "</div><div class=\"s\">score " +
     (p.score === null || p.score === undefined ? "n/a" : p.score.toFixed(0) + " &middot; #" + p.rank) + " of 4 paths</div></div>";
+  m += card("price", "Buying price", sgd(p.price), "CAGR " + p.cagr + "% &middot; lease " + p.lease + "y &rarr; " + Math.max(0, p.lease - NH) + "y at exit");
+  m += card("cash", "Upfront cash needed", sgd(p.cash),
+    p.affordable ? "you have " + sgd(s.cash) + " - enough" : "shortfall " + sgd(p.cash - s.cash));
+  m += card("cpf", "CPF used", sgd(p.cpfUsed), "of " + sgd(p.cpfUsable) + " usable (age-95 test x" + pct(p.cpfFactor) + ")");
+  m += card("gift", "Grant received", sgd(p.grant), "indicative - confirm via HFE letter");
+  m += card("loan", "Loan taken", sgd(p.loan), p.binding + " &middot; " + p.loanTypeLabel, "k-loan");
+  m += card("mon", "Monthly instalment", sgd(p.monthly), "at " + pct(p.rate) + " &middot; stressed " + sgd(p.stressMonthly) + " @ " + pct(p.stressRate));
+  m += card("sale", "Selling price yr " + NH, p.exit ? sgd(p.exit.sale) : "-", "growth " + p.cagr + "%/yr", "k-sale");
+  m += card("pnl", "Net-net P&amp;L by year " + NH, p.exit ? sgd(p.exit.pnl) : "-",
+    "score " + (p.score === null || p.score === undefined ? "n/a" : p.score.toFixed(0) + " &middot; #" + p.rank) + " - every cost included",
+    pnlGood ? "good" : "bad");
   m += "</div>";
 
   let tb = "<div class=\"cmpwrap\"><table class=\"cmp\"><tbody>";
   tb += g("Upfront, grants &amp; loan");
   tb += t("Expected price", sgd(p.price), "CAGR " + p.cagr + "%");
   tb += t("Grants (indicative)", sgd(p.grant), p.grantDetail);
+  tb += g("1. Buying price");
+  tb += t("Expected price", sgd(p.price), "CAGR " + p.cagr + "% - 20-yr historical average default, editable");
   tb += t("BSD + ABSD", sgd(p.duty), "BSD " + sgd(p.bsd) + " + ABSD " + pct(p.absdRate) + " = " + sgd(p.absd));
   tb += t("CPF OA usable after age-95 lease test", sgd(p.cpfUsable),
     "youngest " + s.youngest + " + lease " + p.lease + "y = covers to age " + p.leaseCoverAge +
     (p.cpfFactor < 1 ? " - pro-rated x" + pct(p.cpfFactor) + " of " + sgd(s.cpf) : " - full " + sgd(s.cpf) + " usable"));
   tb += t("CPF OA used for downpayment", sgd(p.cpfUsed));
   tb += t("Cash needed after CPF &amp; grants", sgd(p.cash),
+  tb += t("Remaining lease", p.lease + " yrs", "covers youngest to age " + p.leaseCoverAge + " -&gt; " + Math.max(0, p.lease - NH) + " yrs left in year " + NH);
+
+  tb += g("2. Upfront cash");
+  tb += t("Upfront cash needed", sgd(p.cash),
     p.affordable ? "within your " + sgd(s.cash) + " cash" : "SHORTFALL " + sgd(p.cash - s.cash) + " vs your " + sgd(s.cash));
   tb += t("Minimum cash reserve + loan floor", sgd(p.minCash),
     (p.minLoanRequested ? ">=" + sgd(p.minLoanRequested) + " bank loan floor - " : "") + "cash portion of downpayment");
   tb += t("Loan amount", sgd(p.loanConsidered), "binding: " + p.binding +
     (p.minLoanRequested ? " - floor " + sgd(p.minLoanRequested) : ""));
+
+  tb += g("3. CPF used");
+  tb += t("CPF OA usable after age-95 lease test", sgd(p.cpfUsable),
+    "youngest " + s.youngest + " + lease " + p.lease + "y = covers to age " + p.leaseCoverAge +
+    (p.cpfFactor < 1 ? " - pro-rated x" + pct(p.cpfFactor) + " of " + sgd(s.cpf) : " - full " + sgd(s.cpf) + " usable"));
+  tb += t("CPF OA used for downpayment", sgd(p.cpfUsed), "funding order: loan at max LTV -&gt; grants -&gt; CPF -&gt; cash");
+
+  tb += g("4. Grant received");
+  tb += t("Grants (indicative)", sgd(p.grant), p.grantDetail);
+
+  tb += g("5. Loan taken");
+  tb += t("Loan type", p.loanTypeLabel,
+    p.loanFallback || (p.loanType === "bank" ? "rate is editable on the Dashboard - bank rates move monthly" : "HDB fixed rate - stress floor 3%"));
+  tb += t("Loan amount", sgd(p.loanConsidered), "target max LTV " + sgd(p.loanTargetLtv) + " - binding: " + p.binding +
+    (p.minLoanRequested ? " - floor " + sgd(p.minLoanRequested) : "") +
+    (p.loanShortOfLtv > 1 ? " - TDSR/MSR leaves " + sgd(p.loanShortOfLtv) + " covered by CPF, then cash" : ""));
   tb += t("LTV applied", pct(p.ltvRate), p.lowLtv ? "low tier (MAS): tenure &gt;25/30y or joint age + tenure &gt;65" : "high tier");
   tb += t("Loan tenure applied", p.tenureUsed + " yrs", p.tenureCapWhy);
+
+  tb += g("6. Monthly");
   tb += t("Monthly instalment", sgd(p.monthly), "contract rate " + pct(p.rate));
   tb += t("Stressed monthly", sgd(p.stressMonthly), "stress floor " + pct(p.stressRate));
   tb += t("Stress TDSR / MSR usage", pct(p.tdsrNow) + (p.msrNow !== null ? " / " + pct(p.msrNow) : ""), "limits 55% / 30% of income");
 
   tb += g("Holding cost (net-net ledger)");
+  tb += g("7. Holding cost (net-net ledger)");
   tb += t("Holding cost per year (all-in)", sgd(p.holdingYr));
   tb += t("- property tax", sgd(p.ptaxOO), "owner-occupied, AV est. " + sgd(p.av));
   tb += t("- year-1 interest", sgd(p.interestYr1));
-  tb += t("- maintenance", sgd(p.maint), p.maint ? "" : "");
-  tb += t("- repairs", sgd(p.repairs));
-  tb += t("- insurance", sgd(p.insurance));
   tb += t("Rent paid while waiting", p.exit ? sgd(p.exit.waitRent) : "-", p.wait ? p.wait + "y build wait at your " + sgd(s.curRent) + "/mo rent" : null);
 
   if (p.exit){
     tb += g("Exit in year " + NH);
     tb += t("Sale price in year " + NH, sgd(p.exit.sale), "CAGR " + p.cagr + "%");
+    tb += g("8. Selling price &amp; net-net P&amp;L in year " + NH);
+    tb += t("Sale price in year " + NH, sgd(p.exit.sale), "CAGR " + p.cagr + "% - break-even growth for this path: " +
+      (function(){ const be = breakevenCagr(p, s); return be === null ? "n/a" : be.toFixed(1) + "%/yr"; })());
     tb += t("- Outstanding loan", "-" + sgd(p.exit.outstanding).replace("-", ""));
     tb += t("- SSD (4-yr window)", p.exit.ssd > 0 ? "-" + sgd(p.exit.ssd).replace("-", "") : "S$0", "holding " + NH + " yrs");
     tb += t("- Agent (2%) + legal", "-" + sgd(p.exit.agent + p.exit.sellLegal).replace("-", ""));
-    tb += t("- CPF refund + accrued 2.5%", "-" + sgd(p.exit.cpfRefund).replace("-", ""));
-    tb += t("= Net sale proceeds", sgd(p.exit.netProceed));
-    tb += t("- Acquisition costs", "-" + sgd(p.exit.acquisition).replace("-", ""), "BSD + ABSD + legal + valuation");
-    tb += t("- Holding costs over " + NH + " yrs", "-" + sgd(p.exit.holdingTotal).replace("-", ""));
-    tb += t("- Rent paid while waiting", "-" + sgd(p.exit.waitRent).replace("-", ""));
-    tb += t("+ Rental income net over " + NH + " yrs", "+" + sgd(p.exit.rentalTotal));
-    tb += t("= NET-NET P&amp;L by year " + NH, sgd(p.exit.pnl), "every cost included - duty, interest, tax, fees, rental", true);
-  }
-
-  if ((s.intent === "C" || s.intent === "D") && p.rentalDetail){
-    tb += g("Rental (strategy " + s.intent + ")");
-    tb += t("Rental income net/yr", sgd(p.rentYrNet), "gross " + sgd(p.rentalDetail.grossYr) + " - vacancy, fees, property tax, income tax");
-    tb += t("Rental tax election", p.rentalDetail.useDeemed ? "deemed 15% expense" : "actual expenses", "tax " + sgd(p.rentalDetail.tax));
-    if (p.rentalDetail.mopPhaseout) tb += t("HDB MOP note", "no rental income counted during MOP", "whole-flat renting only after 5y MOP");
-  } else if (s.intent === "C" || s.intent === "D"){
-    tb += g("Rental (strategy " + s.intent + ")");
-    tb += t("Rental income net/yr", "S$0", "expected rent is 0 - set it above to model rental");
-  }
-
-  tb += g("Risks &amp; score");
-  tb += t("Risk flags", p.flags.length ? p.flags.join("<br/>") : "<span class=\"tag ok\">clear</span>");
-  tb += t("Score (intent-weighted)", (p.score === null || p.score === undefined ? "n/a" : p.score.toFixed(0) + " &middot; #" + p.rank + " of 4"),
-    "relative to the other visible paths on the Compare view");
-  tb += "</tbody></table></div>";
-
   const verdict = "<div class=\"verdict\"><div class=\"rank\">This path &middot; score " +
     (p.score === null || p.score === undefined ? "n/a" : p.score.toFixed(0) + " - rank #" + p.rank) +
     "</div><h2>" + p.name + "</h2><p>" + escWhy + "</p></div>";
   out.innerHTML = verdict + m + tb;
+  out.innerHTML = verdict + m + tb + aiPath(p, s, vis || []);
 }
 
 /* ================= export (CSV -> Excel) ================= */
-function downloadCSV(){
-  if (!lastRun) return;
-  const s = lastRun;
-  const paths = ["bto","hdb","new","res"].map(k => computePath(k, s));
-  score(paths, s);
-  const vis = {bto:s.showBto, hdb:s.showHdb, new:s.showNew, res:s.showRes};
-  const esc = x => "\"" + String(x).replace(/"/g, "\"\"") + "\"";
-  const L = [];
-  L.push(["SG Home Decision Kit - comparison", "rules rev " + RULES.rev, "generated " + new Date().toISOString().slice(0,19)]);
-  L.push([]);
-  L.push(["Inputs"]);
-  L.push(["Intent", s.intent, "Horizon (yrs)", s.horizon, "Residency 1", s.residency, "Residency 2", s.p2on ? s.residency2 : "n/a"]);
-  L.push(["Income/mo (combined)", s.income, "Debts/mo", s.debts, "Cash", s.cash, "CPF OA", s.cpf]);
-  L.push(["Ages", s.age1 + (s.p2on ? "/" + s.age2 : ""), "Income-weighted age", s.age.toFixed(1), "Average age", s.avgAge.toFixed(1), "Youngest age", s.youngest]);
-  L.push(["Owned properties", s.owned, "Tenure requested (yrs)", s.tenure, "Remaining lease (yrs)", s.remainingLease, "Current rent/mo", s.curRent]);
-  L.push(["Single scheme", s.solo ? "yes" : "no (joint)", "Flat type (grants)", s.flatType === "big" ? "5-room or bigger" : "2-4 room", "PHG option", s.phg, "Managed rental", s.managed]);
   L.push(["Rent HDB/mo", s.rentHdb, "Rent new condo/mo", s.rentCondo, "Rent resale condo/mo", s.rentRes]);
   L.push(["Path visible: BTO", s.showBto, "Path visible: HDB", s.showHdb, "Path visible: New", s.showNew, "Path visible: Resale", s.showRes]);
   L.push(["CAGR BTO", s.cBto, "CAGR Resale HDB", s.cHdb, "CAGR New condo", s.cNew, "CAGR Resale condo", s.cRes]);
+  L.push(["Loan type BTO", s.loanBto === "bank" ? "bank loan" : "HDB concessionary",
+          "Loan type Resale HDB", s.loanHdb === "bank" ? "bank loan" : "HDB concessionary",
+          "Bank rate % p.a.", s.bankRatePct]);
+  L.push(["CAGR defaults", "2005-2025 historical averages (HDB Resale Price Index ~5.0%/yr, URA private PPI ~4.7-4.8%/yr) - editable"]);
   L.push([]);
 
   // Always 4 columns. Hidden path -> "- (hidden)"; ineligible -> "n/a (ineligible)".
-  L.push(["Measure","BTO/SBF","Resale HDB","New condo","Resale condo"]);
-  const rows = [
-    ["Eligible", p => p.why],
-    ["Price", p => p.price],
-    ["Grants total (indicative)", p => p.grant],
-    ["Grant breakdown (EHG/Family/PHG)", p => p.grantDetail],
-    ["BSD+ABSD", p => p.duty],
-    ["Cash after CPF/grants", p => p.cash],
     ["CPF usable (age-95 lease test)", p => p.cpfUsable],
     ["CPF used", p => p.cpfUsed],
     ["Loan", p => p.loan],
+    ["Loan type", p => p.loanTypeLabel],
+    ["Break-even CAGR % @yr" + s.horizon, p => { const b = breakevenCagr(p, s); return b === null ? "n/a" : b.toFixed(1); }],
+    ["Remaining lease at exit (yrs)", p => Math.max(0, p.lease - s.horizon)],
     ["Binding rule", p => p.binding],
     ["Loan tenure (yrs) & cap", p => p.tenureUsed + " (" + p.tenureCapWhy + ")"],
     ["LTV applied", p => pct(p.ltvRate) + (p.lowLtv ? " (low tier)" : "")],
-    ["Monthly", p => p.monthly],
-    ["Stressed monthly", p => p.stressMonthly],
-    ["Holding cost/yr", p => p.holdingYr],
-    ["Sale price @yr" + s.horizon, p => p.exit.sale],
-    ["Net proceeds @yr" + s.horizon, p => p.exit.netProceed],
-    ["NET-NET P&L @yr" + s.horizon, p => p.exit.pnl]
-  ];
-  if (s.intent === "C" || s.intent === "D") rows.push(["Rental net/yr", p => p.rentYrNet]);
-  rows.push(["Score", p => p.score === null ? "n/a" : p.score.toFixed(0)]);
-  rows.push(["Risk flags", p => p.flags.join("; ")]);
-
-  const cell = (k, f) => {
-    if (!vis[k]) return "- (hidden)";
-    const p = paths.filter(pp => pp.key === k)[0];
-    return p.eligible ? f(p) : "n/a (ineligible)";
-  };
-  rows.forEach(r => {
-    L.push([r[0], cell("bto", r[1]), cell("hdb", r[1]), cell("new", r[1]), cell("res", r[1])]);
-  });
-  L.push([]);
-  L.push(['Hidden paths are marked "- (hidden)"; ineligible paths are marked "n/a (ineligible)".']);
-  L.push(["Assumptions & sources: BSD/ABSD/SSD/property tax IRAS; LTV/TDSR/MSR/joint age MAS; BTO ceilings, EHG/Family/PHG grants & HDB loan tenure HDB (ceilings raised 24 Aug 2026); CPF age-95 lease proration CPF Board."]);
-  L.push(["Grants assume first-timer status (no prior CPF housing grant) and no private property owned/disposed in the last 30 months. Estimates only - not financial advice."]);
-  const csv = "\ufeff" + L.map(r => r.map(esc).join(",")).join("\r\n");
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sg-home-comparison-" + new Date().toISOString().slice(0,10) + ".csv";
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-}
-
-/* ================= wiring ================= */
-function safeRender(){
-  try { render(); $("#errBox").hidden = true; }
-  catch(err){
-    const e = $("#errBox"); e.hidden = false;
-    e.textContent = "Something went wrong while calculating (" + err.message + "). Your inputs are untouched - please retry or adjust the fields.";
-    if (window.console) console.error(err);
-  }
-}
-document.querySelectorAll(".intent").forEach(b => b.addEventListener("click", () => pickIntent(b)));
-document.querySelectorAll("#horizons .chip, #horizons2 .chip").forEach(c => c.addEventListener("click", () => pickHorizon(+c.dataset.h, true)));
-$("#p2enable").addEventListener("change", () => { $("#p2Block").hidden = $("#p2enable").value !== "yes"; });
-$("#editInputs").addEventListener("click", () => showView("dash"));
-$("#dl").addEventListener("click", downloadCSV);
-$("#btnCsv").addEventListener("click", e => { e.preventDefault(); downloadCSV(); });
-// delegated navigation: header nav, dashboard cards, calculator buttons
-if (document.addEventListener) document.addEventListener("click", e => {
-  if (!e.target || !e.target.closest) return;
-  const v = e.target.closest("[data-view]");
-  if (v) { e.preventDefault(); showView(v.getAttribute("data-view")); return; }
   const o = e.target.closest("[data-open]");
   if (o) { e.preventDefault(); showView(o.getAttribute("data-open")); return; }
   const d = e.target.closest("[data-dl]");
   if (d) { e.preventDefault(); downloadCSV(); }
+  if (d) { e.preventDefault(); downloadCSV(); return; }
+  const c = e.target.closest("[data-cagr]");
+  if (c) {
+    e.preventDefault();
+    const id = c.getAttribute("data-cagr");
+    const hk = id === "cBto" ? "bto" : id === "cHdb" ? "hdb" : id === "cNew" ? "new" : "res";
+    const el = $("#" + id);
+    if (el) { el.value = RULES.histCagr[hk]; if (lastRun) safeRender(); }
+  }
 });
 // instant recalc when any profile field changes (results stay live)
 ["p2enable","residency","residency2","age","age2","income","income2","debts","cash","cpf","owned",
  "curRent","tenure","single","managed","lease","flatType","phg","pBto","pHdb","pNew","pRes",
  "cBto","cHdb","cNew","cRes","rentHdb","rentCondo","rentRes","showBto","showHdb","showNew","showRes"
+ "cBto","cHdb","cNew","cRes","rentHdb","rentCondo","rentRes","showBto","showHdb","showNew","showRes",
+ "bankRate","loanTypeBto","loanTypeHdb"
 ].forEach(id => {
   const el = $("#"+id);
   if (el && el.addEventListener) {
-    el.addEventListener("change", () => { if (lastRun) safeRender(); });
     el.addEventListener("input", () => { if (lastRun) safeRender(); });
   }
 });
 // results-bar CAGR overrides recalc instantly
 ["rBto","rHdb","rNew","rRes"].forEach(id => { $("#"+id).addEventListener("input", () => { if (lastRun) safeRender(); }); });
+// results-bar CAGR fields edit the SAME values as the calculators (c*), so both stay in sync
+["rBto","rHdb","rNew","rRes"].forEach(id => {
+  const el = $("#" + id);
+  if (!el || !el.addEventListener) return;
+  el.addEventListener("input", () => {
+    const raw = String(el.value == null ? "" : el.value).trim();
+    if (raw === "") return;                       // leave an emptied field alone until the next render
+    const tgt = $("#c" + id.slice(1));             // rBto -> cBto, rHdb -> cHdb, ...
+    if (tgt) tgt.value = raw;
+    if (lastRun) safeRender();
+  });
+});
+// single holding period typed by hand (chips handle the preset values)
+const hzEl = $("#horizonNum");
+if (hzEl && hzEl.addEventListener){
+  const commitHorizon = () => {
+    const raw = String(hzEl.value == null ? "" : hzEl.value).trim();
+    const n = clamp(Math.round(parseFloat(raw) || state.horizon), 1, 40);
+    pickHorizon(n, true);
+  };
+  hzEl.addEventListener("change", commitHorizon);
+  hzEl.addEventListener("blur", commitHorizon);
+}
 pickIntent(document.querySelector(".intent"));
 pickHorizon(10, false);
 showView("dash");
-safeRender();
-</script>
-</body>
-</html>
