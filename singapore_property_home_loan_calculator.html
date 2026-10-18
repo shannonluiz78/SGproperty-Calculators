@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SG Property Upgrade & Home Loan Calculator | IRAS & MAS Compliant</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Range Slider Styling */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      outline: none;
+      transition: background 0.2s;
+    }
+    input[type="range"]:hover {
+      background: #cbd5e1;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4f46e5;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+      background: #4338ca;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4f46e5;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    /* Clean Number Inputs */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* Print Styles */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+      }
+      .print-break-inside-avoid {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- Top Navigation / Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <i class="fa-solid fa-building-columns text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">SG PropCalc <span class="text-indigo-600">Pro</span></h1>
+            <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <i class="fa-solid fa-shield-check"></i> IRAS & MAS Rules Verified
+            </span>
+          </div>
+          <p class="text-xs text-slate-500">Singapore Residential Buying, Selling & MAS TDSR/MSR Engine (100% Rule-Based • Zero AI API)</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 no-print">
+        <button id="btnReset" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+        <button id="btnCopyReport" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm shadow-indigo-500/20 transition">
+          <i class="fa-regular fa-copy"></i> Copy Advisory Summary
+        </button>
+        <button onclick="window.print()" type="button" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition">
+          <i class="fa-solid fa-print"></i> Print / PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <!-- STEP 1: PROFILE SWITCHER -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-2.5">
+        <label class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-indigo-600 text-white inline-flex items-center justify-center text-[11px] font-bold">1</span>
+          Select Your Singapore Property Journey
+        </label>
+        <span id="activeModeBadge" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+          Upgrader Mode (HDB to Condo)
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+        <!-- Profile 1: Sell HDB & Buy Condo -->
+        <button type="button" data-mode="upgrade" class="mode-tab group relative flex items-start gap-3.5 p-3.5 rounded-xl text-left transition-all bg-indigo-600 text-white shadow-md shadow-indigo-600/20">
+          <div class="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center shrink-0 mt-0.5 mode-icon">
+            <i class="fa-solid fa-arrow-trend-up text-lg"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm leading-tight">Sell HDB & Upgrade to Condo</div>
+            <p class="text-[11px] opacity-85 mt-1 leading-snug">Calculates HDB cash proceeds, CPF refund, BSD & Condo TDSR.</p>
+          </div>
+        </button>
+
+        <!-- Profile 2: Buy Private Condo Only -->
+        <button type="button" data-mode="condo" class="mode-tab group relative flex items-start gap-3.5 p-3.5 rounded-xl text-left transition-all hover:bg-slate-50 text-slate-700">
+          <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 mt-0.5 mode-icon">
+            <i class="fa-solid fa-city text-lg"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm leading-tight">Buy Private Condo Only</div>
+            <p class="text-[11px] opacity-75 mt-1 leading-snug">Direct purchase outlay, 75% LTV bank loan & 55% MAS TDSR check.</p>
+          </div>
+        </button>
+
+        <!-- Profile 3: Buy HDB Resale Only -->
+        <button type="button" data-mode="hdb" class="mode-tab group relative flex items-start gap-3.5 p-3.5 rounded-xl text-left transition-all hover:bg-slate-50 text-slate-700">
+          <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 mt-0.5 mode-icon">
+            <i class="fa-solid fa-house-chimney-user text-lg"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm leading-tight">Buy HDB Resale Only</div>
+            <p class="text-[11px] opacity-75 mt-1 leading-snug">Enforces both MAS 30% MSR cap & 55% TDSR stress test at 4.0%.</p>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- TWO-COLUMN MAIN GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT COLUMN: MINIMUM INPUT CONTROLS (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- MODULE A: SELLING EXISTING HDB (Only visible in 'upgrade' mode) -->
+        <div id="moduleSellHdb" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
+          <div class="px-5 py-4 bg-gradient-to-r from-amber-50/90 via-white to-white border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </span>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900">Step 2A: Existing HDB Sale Calculator</h2>
+                <p class="text-[11px] text-slate-500">Computes your net cash proceeds and CPF OA refund for your next purchase</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
+              3 Inputs
+            </span>
+          </div>
+
+          <div class="p-5 space-y-5">
+            <!-- Input 1: Expected HDB Sale Price -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="numSalePrice" class="text-xs font-semibold text-slate-700">Expected HDB Selling Price</label>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numSalePrice" value="750000" step="5000" min="200000" max="2000000"
+                    class="w-36 pl-6 pr-2.5 py-1.5 text-right font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                </div>
+              </div>
+              <input type="range" id="rngSalePrice" min="250000" max="1600000" step="10000" value="750000">
+              <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                <span>$250k</span>
+                <span>$750k</span>
+                <span>$1.6M</span>
+              </div>
+            </div>
+
+            <!-- Input 2: Outstanding HDB Loan -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="numOutstandingLoan" class="text-xs font-semibold text-slate-700">Outstanding HDB / Bank Loan Balance</label>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numOutstandingLoan" value="220000" step="5000" min="0" max="1500000"
+                    class="w-36 pl-6 pr-2.5 py-1.5 text-right font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                </div>
+              </div>
+              <input type="range" id="rngOutstandingLoan" min="0" max="900000" step="5000" value="220000">
+              <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                <span>$0 (Fully Paid)</span>
+                <span>$450k</span>
+                <span>$900k</span>
+              </div>
+            </div>
+
+            <!-- Input 3: CPF Principal + Accrued Interest -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <div>
+                  <label for="numCpfRefund" class="text-xs font-semibold text-slate-700">CPF Principal + 2.5% Accrued Interest Used</label>
+                  <span class="block text-[10px] text-slate-400">Check via myCPF Portal &rarr; Home Ownership Dashboard</span>
+                </div>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numCpfRefund" value="180000" step="5000" min="0" max="1500000"
+                    class="w-36 pl-6 pr-2.5 py-1.5 text-right font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                </div>
+              </div>
+              <input type="range" id="rngCpfRefund" min="0" max="800000" step="5000" value="180000">
+              <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                <span>$0</span>
+                <span>$400k</span>
+                <span>$800k</span>
+              </div>
+            </div>
+
+            <!-- Live Mini Strip for HDB Sale Proceeds -->
+            <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/80 grid grid-cols-3 gap-2 text-center">
+              <div>
+                <div class="text-[10px] font-semibold text-amber-800 uppercase">Est. Selling Costs</div>
+                <div id="lblMiniSellCosts" class="font-mono text-xs sm:text-sm font-bold text-slate-700 mt-0.5">$17,500</div>
+              </div>
+              <div class="border-x border-amber-200/80 px-1">
+                <div class="text-[10px] font-semibold text-indigo-800 uppercase">Refunded to CPF OA</div>
+                <div id="lblMiniCpfRefunded" class="font-mono text-xs sm:text-sm font-bold text-indigo-700 mt-0.5">$180,000</div>
+              </div>
+              <div>
+                <div class="text-[10px] font-semibold text-emerald-800 uppercase">Net Cash Proceeds</div>
+                <div id="lblMiniNetCash" class="font-mono text-xs sm:text-sm font-bold text-emerald-700 mt-0.5">$332,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE B: TARGET PROPERTY PURCHASE & WAR CHEST -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 bg-gradient-to-r from-indigo-50/90 via-white to-white border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid fa-key"></i>
+              </span>
+              <div>
+                <h2 id="titleBuyModule" class="text-sm font-bold text-slate-900">Step 2B: Target Condo Purchase & Existing Funds</h2>
+                <p class="text-[11px] text-slate-500">Auto-computes 6-tier IRAS Buyer's Stamp Duty (BSD) & 25% down payment split</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
+              3 Inputs
+            </span>
+          </div>
+
+          <div class="p-5 space-y-5">
+            <!-- Input 1: Target Purchase Price -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="numBuyPrice" id="lblBuyPriceTitle" class="text-xs font-semibold text-slate-700">Target Property Purchase Price</label>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numBuyPrice" value="1650000" step="10000" min="300000" max="10000000"
+                    class="w-36 pl-6 pr-2.5 py-1.5 text-right font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                </div>
+              </div>
+              <input type="range" id="rngBuyPrice" min="300000" max="4500000" step="10000" value="1650000">
+              <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                <span>$300k</span>
+                <span>$1.65M</span>
+                <span>$4.5M</span>
+              </div>
+            </div>
+
+            <!-- Input 2 & 3 Grid: Additional Cash & CPF Savings -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2 border-t border-slate-100">
+              <!-- Existing Cash Savings -->
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <div>
+                    <label for="numExtraCash" class="text-xs font-semibold text-slate-700">Existing Cash Savings</label>
+                    <span id="subExtraCash" class="block text-[10px] text-slate-400">On top of HDB cash proceeds</span>
+                  </div>
+                  <div class="relative flex items-center">
+                    <span class="absolute left-2.5 text-xs font-bold text-slate-400">$</span>
+                    <input type="number" id="numExtraCash" value="60000" step="5000" min="0" max="5000000"
+                      class="w-28 pl-5 pr-2 py-1 text-right font-mono text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                  </div>
+                </div>
+                <input type="range" id="rngExtraCash" min="0" max="1000000" step="5000" value="60000">
+              </div>
+
+              <!-- Existing CPF OA Balance -->
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <div>
+                    <label for="numExtraCpf" class="text-xs font-semibold text-slate-700">Existing CPF OA Balance</label>
+                    <span id="subExtraCpf" class="block text-[10px] text-slate-400">On top of HDB CPF refund</span>
+                  </div>
+                  <div class="relative flex items-center">
+                    <span class="absolute left-2.5 text-xs font-bold text-slate-400">$</span>
+                    <input type="number" id="numExtraCpf" value="40000" step="5000" min="0" max="5000000"
+                      class="w-28 pl-5 pr-2 py-1 text-right font-mono text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                  </div>
+                </div>
+                <input type="range" id="rngExtraCpf" min="0" max="1000000" step="5000" value="40000">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE C: HOME LOAN & MAS TDSR / MSR CALCULATOR -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 bg-gradient-to-r from-emerald-50/90 via-white to-white border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </span>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900">Step 3: Home Loan & MAS Affordability Stress-Test</h2>
+                <p class="text-[11px] text-slate-500">Checks MAS 55% TDSR (and 30% MSR for HDB) at the mandatory 4.0% p.a. stress floor</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+              4 Inputs
+            </span>
+          </div>
+
+          <div class="p-5 space-y-5">
+            <!-- Combined Gross Monthly Income -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <div>
+                  <label for="numIncome" class="text-xs font-semibold text-slate-700">Combined Gross Monthly Income (Before CPF)</label>
+                  <span class="block text-[10px] text-slate-400">Include fixed salary; variable bonus/commissions take a 30% MAS haircut</span>
+                </div>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numIncome" value="14000" step="500" min="2000" max="200000"
+                    class="w-36 pl-6 pr-2.5 py-1.5 text-right font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+              </div>
+              <input type="range" id="rngIncome" min="3000" max="50000" step="500" value="14000">
+              <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                <span>$3,000/mo</span>
+                <span>$14,000/mo</span>
+                <span>$50,000/mo</span>
+              </div>
+            </div>
+
+            <!-- Existing Monthly Debt Obligations -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <div>
+                  <label for="numOtherDebt" class="text-xs font-semibold text-slate-700">Existing Monthly Debt Repayments</label>
+                  <span class="block text-[10px] text-slate-400">Car loans, student loans, personal loans, credit card minimums (Excl. current HDB loan if selling)</span>
+                </div>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numOtherDebt" value="0" step="100" min="0" max="50000"
+                    class="w-36 pl-6 pr-2.5 py-1.5 text-right font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+              </div>
+              <input type="range" id="rngOtherDebt" min="0" max="10000" step="100" value="0">
+            </div>
+
+            <!-- LTV % and Loan Tenure Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2 border-t border-slate-100">
+              <!-- Target LTV (%) -->
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <div>
+                    <label for="numLtv" class="text-xs font-semibold text-slate-700">Loan-to-Value (LTV %)</label>
+                    <span class="block text-[10px] text-slate-400">MAS Max: 75% (1st housing loan)</span>
+                  </div>
+                  <div class="relative flex items-center">
+                    <input type="number" id="numLtv" value="75" step="1" min="10" max="75"
+                      class="w-20 pl-2 pr-6 py-1 text-right font-mono text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <span class="absolute right-2.5 text-xs font-bold text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range" id="rngLtv" min="20" max="75" step="5" value="75">
+              </div>
+
+              <!-- Loan Tenure (Years) -->
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <div>
+                    <label for="numTenure" class="text-xs font-semibold text-slate-700">Loan Tenure (Years)</label>
+                    <span id="subTenureCap" class="block text-[10px] text-slate-400">Max 30 yrs (Condo) / 25 yrs (HDB)</span>
+                  </div>
+                  <div class="relative flex items-center">
+                    <input type="number" id="numTenure" value="30" step="1" min="5" max="35"
+                      class="w-20 pl-2 pr-7 py-1 text-right font-mono text-xs font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <span class="absolute right-2 text-[11px] font-bold text-slate-400">yr</span>
+                  </div>
+                </div>
+                <input type="range" id="rngTenure" min="5" max="30" step="1" value="30">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: PROGRESSIVE DISCLOSURE - ASSUMPTIONS & ABSD SETTINGS -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <button type="button" id="btnToggleAssumptions" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-sliders"></i>
+              </span>
+              <div>
+                <h3 class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2">
+                  Edit Working Assumptions & ABSD Profile
+                  <span class="px-2 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-800 rounded-full">Assumptions Isolated</span>
+                </h3>
+                <p class="text-[11px] text-slate-500">Bank interest rate (3.0% default), ABSD status (0% default), agent commission (2.0%) & legal fees</p>
+              </div>
+            </div>
+            <i id="iconAssumptions" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+          </button>
+
+          <div id="panelAssumptions" class="hidden border-t border-slate-100 p-5 bg-slate-50/60 space-y-4">
+            <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-info text-amber-600 mt-0.5"></i>
+              <div>
+                <strong>Strict Separation of Facts vs. Assumptions:</strong> Statutory rules (IRAS 6-tier BSD, 5% min cash down payment, MAS 55% TDSR & 4.0% stress rate) are locked to verified formulas. The fields below are <strong>editable market assumptions</strong> that you can customize.
+              </div>
+            </div>
+
+            <!-- Buyer Citizenship & ABSD Profile -->
+            <div>
+              <label for="selAbsdProfile" class="block text-xs font-semibold text-slate-700 mb-1">
+                Buyer Citizenship & Property Count (IRAS ABSD Rule)
+              </label>
+              <select id="selAbsdProfile" class="w-full p-2.5 text-xs font-semibold bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                <option value="0">Singapore Citizen (SC) — 1st Property OR Selling HDB Before/Concurrently (0% ABSD)</option>
+                <option value="20_remit">SC Married Couple — Buying Condo First Before Selling HDB (20% ABSD Upfront, Refundable within 6m of Sale)</option>
+                <option value="20">Singapore Citizen (SC) — Keeping Existing Property as 2nd Property (20% ABSD)</option>
+                <option value="5">Singapore Permanent Resident (SPR) — 1st Residential Property (5% ABSD)</option>
+                <option value="30">Singapore Permanent Resident (SPR) — 2nd Residential Property (30% ABSD)</option>
+                <option value="60">Foreigner — Any Residential Property (60% ABSD)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Actual Bank Package Interest Rate -->
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                  <label for="numActualRate" class="text-xs font-semibold text-slate-700">Assumed Bank Interest Rate</label>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Assumption</span>
+                </div>
+                <p class="text-[10px] text-slate-400 mb-2">Used for actual monthly repayment (MAS TDSR still tests at min 4.0%)</p>
+                <div class="relative flex items-center">
+                  <input type="number" id="numActualRate" value="3.0" step="0.1" min="1.0" max="8.0"
+                    class="w-full pr-12 pl-3 py-1.5 font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg">
+                  <span class="absolute right-3 text-xs font-bold text-slate-400">% p.a.</span>
+                </div>
+              </div>
+
+              <!-- Selling Agent Commission (%) -->
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                  <label for="numAgentComm" class="text-xs font-semibold text-slate-700">HDB Selling Agent Fee (%)</label>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Assumption</span>
+                </div>
+                <p class="text-[10px] text-slate-400 mb-2">Standard SG market rate is 1% to 2% of sale price</p>
+                <div class="relative flex items-center">
+                  <input type="number" id="numAgentComm" value="2.0" step="0.25" min="0" max="5"
+                    class="w-full pr-8 pl-3 py-1.5 font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg">
+                  <span class="absolute right-3 text-xs font-bold text-slate-400">%</span>
+                </div>
+              </div>
+
+              <!-- Buying Legal & Valuation Fee -->
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                  <label for="numBuyLegal" class="text-xs font-semibold text-slate-700">Purchase Legal & Valuation</label>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Assumption</span>
+                </div>
+                <div class="relative flex items-center mt-2">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numBuyLegal" value="3500" step="250" min="0" max="20000"
+                    class="w-full pl-7 pr-3 py-1.5 font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg">
+                </div>
+              </div>
+
+              <!-- Selling Legal & Admin Fee -->
+              <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                  <label for="numSellLegal" class="text-xs font-semibold text-slate-700">HDB Selling Legal & Admin</label>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Assumption</span>
+                </div>
+                <div class="relative flex items-center mt-2">
+                  <span class="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                  <input type="number" id="numSellLegal" value="2500" step="250" min="0" max="20000"
+                    class="w-full pl-7 pr-3 py-1.5 font-mono text-sm font-bold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRANSPARENCY & MISSING INFORMATION CHECKLIST CARD -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm print-break-inside-avoid">
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-clipboard-check text-indigo-600"></i>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider">
+              Explicitly Flagged Missing Info & Verification Checklist
+            </h3>
+          </div>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            To keep inputs minimal, this calculator does not guess personal variables not entered above. Before signing an Option to Purchase (OTP), explicitly verify these <strong>4 statutory checkpoints</strong>:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <i class="fa-solid fa-user-clock text-indigo-500"></i> 1. Age-65 MAS LTV Cap
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">
+                If <span class="font-mono">(Borrower Age + Loan Tenure) &gt; 65</span>, MAS drops max bank LTV from <strong>75% to 55%</strong> (requiring 10% min cash down payment).
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <i class="fa-solid fa-briefcase text-indigo-500"></i> 2. Variable Income 30% Haircut
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">
+                Bonuses, commissions, self-employed, or rental income are only recognized at <strong>70%</strong> by banks for MAS TDSR calculation.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <i class="fa-solid fa-calendar-check text-indigo-500"></i> 3. HDB 5-Year MOP & Resale Levy
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">
+                Confirm your HDB has fulfilled its 5-year Minimum Occupation Period (MOP). Upgrading to a private Condo incurs <strong>$0 HDB Resale Levy</strong>.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <i class="fa-solid fa-Piggy-bank text-indigo-500"></i> 4. CPF Basic Retirement Sum (BRS)
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">
+                If you are aged 55 and above, CPF refunds go toward your Retirement Account (RA) up to your BRS before excess OA can be used for housing.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: LIVE RESULTS & DETERMINISTIC RECOMMENDATION ENGINE (5 Cols, Sticky) -->
+      <div class="lg:col-span-5 lg:sticky lg:top-20 space-y-5">
+
+        <!-- OVERALL STATUS HERO CARD -->
+        <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-xl border border-slate-800 relative overflow-hidden">
+          <!-- Decorative subtle glow -->
+          <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-indigo-500/15 blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-300">Live Financial Output</span>
+            <span id="badgeOverallVerdict" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <i class="fa-solid fa-circle-check"></i> READY TO PROCEED
+            </span>
+          </div>
+
+          <!-- Hero Grid: Monthly Instalment & Net Surplus/Shortfall -->
+          <div class="grid grid-cols-2 gap-4 pb-5 border-b border-slate-800">
+            <div>
+              <div class="text-xs text-slate-400">Est. Monthly Mortgage</div>
+              <div id="heroMonthlyPayment" class="font-mono text-2xl sm:text-3xl font-extrabold text-white mt-1">$5,217</div>
+              <div id="heroRateSubtext" class="text-[11px] text-slate-400 mt-1">
+                At <span class="text-indigo-300 font-semibold">3.0% p.a.</span> (<span id="heroLoanAmt">$1.24M</span> loan)
+              </div>
+            </div>
+
+            <div class="border-l border-slate-800 pl-4">
+              <div id="heroPositionLabel" class="text-xs text-slate-400">Net Upfront Buffer</div>
+              <div id="heroNetBuffer" class="font-mono text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">+$144,400</div>
+              <div id="heroBufferSubtext" class="text-[11px] text-slate-400 mt-1">
+                After 25% down payment & BSD
+              </div>
+            </div>
+          </div>
+
+          <!-- MAS Stress-Test Gauges -->
+          <div class="pt-4 space-y-3">
+            <!-- TDSR Bar -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1">
+                <span class="text-slate-300 font-medium flex items-center gap-1.5">
+                  MAS TDSR Stress-Test <span class="text-[10px] text-slate-400 font-mono">(at 4.0% p.a.)</span>
+                </span>
+                <span id="lblTdsrValue" class="font-mono font-bold text-emerald-400">42.2% / 55.0% Max</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="barTdsr" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 42%;"></div>
+              </div>
+            </div>
+
+            <!-- MSR Bar (Only shown in HDB Resale mode) -->
+            <div id="rowMsrGauge" class="hidden">
+              <div class="flex justify-between items-center text-xs mb-1">
+                <span class="text-slate-300 font-medium flex items-center gap-1.5">
+                  MAS HDB MSR Cap <span class="text-[10px] text-slate-400 font-mono">(Max 30% of Income)</span>
+                </span>
+                <span id="lblMsrValue" class="font-mono font-bold text-emerald-400">22.5% / 30.0% Max</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="barMsr" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 22.5%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAPITAL & STAMP DUTY BREAKDOWN CARD -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Upfront Outlay & War Chest Ledger</h3>
+            <span id="lblTotalPurchaseCost" class="text-xs font-mono font-bold text-slate-700">Total Cost: $1,705,600</span>
+          </div>
+
+          <!-- Visual Stacked Capital Bar -->
+          <div>
+            <div class="w-full h-3.5 rounded-full bg-slate-100 overflow-hidden flex p-0.5 gap-0.5">
+              <div id="segLoan" class="bg-indigo-600 h-full rounded-l-full transition-all duration-300" style="width: 72%" title="Bank Loan"></div>
+              <div id="segCpf" class="bg-sky-500 h-full transition-all duration-300" style="width: 18%" title="CPF OA Used"></div>
+              <div id="segCash" class="bg-emerald-500 h-full rounded-r-full transition-all duration-300" style="width: 10%" title="Cash Used"></div>
+              <div id="segShortfall" class="bg-rose-500 h-full rounded-r-full hidden transition-all duration-300" style="width: 0%" title="Shortfall"></div>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 mt-2">
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-indigo-600"></span>Loan: <strong id="legLoan" class="font-mono">$1,237,500</strong></span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-sky-500"></span>CPF Used: <strong id="legCpf" class="font-mono">$220,000</strong></span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>Cash Used: <strong id="legCash" class="font-mono">$248,100</strong></span>
+            </div>
+          </div>
+
+          <!-- Itemized Table -->
+          <div class="border-t border-slate-100 pt-3 space-y-2 text-xs">
+            <div class="flex justify-between py-1">
+              <span class="text-slate-600">1. Mandatory Min. Cash Down Payment (5%) <span class="text-[10px] font-semibold text-indigo-600">[Fact]</span></span>
+              <span id="tblMinCash" class="font-mono font-bold text-slate-900">$82,500</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-slate-600">2. Remaining Down Payment (<span id="lblRemDpPct">20%</span> CPF/Cash) <span class="text-[10px] font-semibold text-indigo-600">[Fact]</span></span>
+              <span id="tblRemDp" class="font-mono font-bold text-slate-900">$330,000</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-slate-600">3. IRAS Buyer's Stamp Duty (BSD) <span class="text-[10px] font-semibold text-indigo-600">[Fact]</span></span>
+              <span id="tblBsd" class="font-mono font-bold text-slate-900">$52,100</span>
+            </div>
+            <div id="rowAbsdTable" class="hidden flex justify-between py-1 bg-amber-50 px-2 rounded-lg">
+              <span class="text-amber-900 font-medium">4. Additional Buyer's Stamp Duty (ABSD) <span class="text-[10px] font-semibold">[Fact]</span></span>
+              <span id="tblAbsd" class="font-mono font-bold text-amber-900">$0</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-slate-600">Est. Legal & Valuation Fee <span class="text-[10px] font-semibold text-amber-700">[Assumption]</span></span>
+              <span id="tblLegalBuy" class="font-mono font-semibold text-slate-700">$3,500</span>
+            </div>
+
+            <div class="border-t border-slate-200 pt-2.5 mt-2 flex justify-between items-center text-xs font-bold">
+              <span class="text-slate-900">Total Upfront Cash + CPF Required</span>
+              <span id="tblTotalUpfrontReq" class="font-mono text-sm text-indigo-600">$468,100</span>
+            </div>
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span class="text-slate-700">Total Available War Chest (Cash + CPF)</span>
+              <span id="tblTotalAvailable" class="font-mono text-sm text-emerald-600">$612,500</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUTOMATED SUMMARY & STRATEGIC RECOMMENDATION PANEL -->
+        <div class="bg-white rounded-2xl border-2 border-indigo-100 p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs">
+                <i class="fa-solid fa-lightbulb"></i>
+              </span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Executive Summary & Recommendations</h3>
+                <p class="text-[11px] text-slate-500">Tailored action plan based on your exact numbers</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic 3-Pillar Recommendation List -->
+          <div id="recommendationList" class="space-y-3 text-xs leading-relaxed">
+            <!-- Populated dynamically by deterministic JS engine -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Notification for Copy -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 text-white text-xs font-semibold shadow-xl border border-slate-700">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+    <span id="toastMessage">Summary copied to clipboard!</span>
+  </div>
+
+  <!-- JavaScript Deterministic Calculation Engine -->
+  <script>
+    // =========================================================================
+    // 1. STATE & DEFAULT PRESETS BY PROFILE
+    // =========================================================================
+    let currentMode = 'upgrade'; // 'upgrade' | 'condo' | 'hdb'
+
+    const MODE_PRESETS = {
+      upgrade: {
+        badge: 'Upgrader Mode (Sell HDB & Buy Condo)',
+        buyTitle: 'Step 2B: Target Condo Purchase & Existing Funds',
+        buyPrice: 1650000,
+        extraCash: 60000,
+        extraCpf: 40000,
+        income: 14000,
+        tenure: 30,
+        maxTenure: 30
+      },
+      condo: {
+        badge: 'Direct Purchase (Private Condo Only)',
+        buyTitle: 'Step 2: Target Condo Purchase & Available Funds',
+        buyPrice: 1500000,
+        extraCash: 200000,
+        extraCpf: 250000,
+        income: 13000,
+        tenure: 30,
+        maxTenure: 30
+      },
+      hdb: {
+        badge: 'Public Housing (Buy HDB Resale Only)',
+        buyTitle: 'Step 2: Target HDB Resale Purchase & Available Funds',
+        buyPrice: 680000,
+        extraCash: 55000,
+        extraCpf: 140000,
+        income: 9000,
+        tenure: 25,
+        maxTenure: 25
+      }
+    };
+
+    // =========================================================================
+    // 2. VERIFIED SINGAPORE STATUTORY FORMULAS (IRAS & MAS)
+    // =========================================================================
+
+    /**
+     * Exact 6-Tier IRAS Buyer's Stamp Duty (BSD) for Residential Properties
+     */
+    function calculateIRAS_BSD(price) {
+      let remaining = Math.max(0, price);
+      let bsd = 0;
+
+      const tiers = [
+        { cap: 180000, rate: 0.01 },
+        { cap: 180000, rate: 0.02 },
+        { cap: 640000, rate: 0.03 },
+        { cap: 500000, rate: 0.04 },
+        { cap: 1500000, rate: 0.05 },
+        { cap: Infinity, rate: 0.06 }
+      ];
+
+      for (const tier of tiers) {
+        if (remaining <= 0) break;
+        const taxable = Math.min(remaining, tier.cap);
+        bsd += taxable * tier.rate;
+        remaining -= taxable;
+      }
+      return Math.round(bsd);
+    }
+
+    /**
+     * Standard Monthly Mortgage Amortization Formula
+     * M = P * [r(1+r)^n] / [(1+r)^n - 1]
+     */
+    function calculateMonthlyMortgage(principal, annualRatePct, years) {
+      if (principal <= 0 || years <= 0) return 0;
+      const r = (annualRatePct / 100) / 12;
+      const n = years * 12;
+      if (r === 0) return principal / n;
+      return (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+
+    /**
+     * Inverse Amortization: Max Loan Principal given a max allowed monthly payment
+     */
+    function calculateMaxLoanFromPayment(maxMonthlyPayment, annualRatePct, years) {
+      if (maxMonthlyPayment <= 0 || years <= 0) return 0;
+      const r = (annualRatePct / 100) / 12;
+      const n = years * 12;
+      if (r === 0) return maxMonthlyPayment * n;
+      return maxMonthlyPayment * ((Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n)));
+    }
+
+    /**
+     * Format currency in SGD ($1,234,567)
+     */
+    function fmtSGD(amount, showPlus = false) {
+      const rounded = Math.round(amount);
+      const prefix = rounded < 0 ? '-$' : (showPlus && rounded > 0 ? '+$' : '$');
+      return prefix + Math.abs(rounded).toLocaleString('en-SG');
+    }
+
+    // =========================================================================
+    // 3. SYNCHRONIZE SLIDERS AND NUMBER INPUTS
+    // =========================================================================
+    const linkedPairs = [
+      ['numSalePrice', 'rngSalePrice'],
+      ['numOutstandingLoan', 'rngOutstandingLoan'],
+      ['numCpfRefund', 'rngCpfRefund'],
+      ['numBuyPrice', 'rngBuyPrice'],
+      ['numExtraCash', 'rngExtraCash'],
+      ['numExtraCpf', 'rngExtraCpf'],
+      ['numIncome', 'rngIncome'],
+      ['numOtherDebt', 'rngOtherDebt'],
+      ['numLtv', 'rngLtv'],
+      ['numTenure', 'rngTenure']
+    ];
+
+    linkedPairs.forEach(([numId, rngId]) => {
+      const numEl = document.getElementById(numId);
+      const rngEl = document.getElementById(rngId);
+
+      rngEl.addEventListener('input', () => {
+        numEl.value = rngEl.value;
+        runCalculationEngine();
+      });
+
+      numEl.addEventListener('input', () => {
+        rngEl.value = numEl.value;
+        runCalculationEngine();
+      });
+    });
+
+    // Assumption Inputs Listeners
+    ['selAbsdProfile', 'numActualRate', 'numAgentComm', 'numBuyLegal', 'numSellLegal'].forEach(id => {
+      document.getElementById(id).addEventListener('input', runCalculationEngine);
+    });
+
+    // Toggle Assumptions Accordion
+    document.getElementById('btnToggleAssumptions').addEventListener('click', () => {
+      const panel = document.getElementById('panelAssumptions');
+      const icon = document.getElementById('iconAssumptions');
+      panel.classList.toggle('hidden');
+      icon.classList.toggle('rotate-180');
+    });
+
+    // Mode Switching Tabs
+    document.querySelectorAll('.mode-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedMode = btn.getAttribute('data-mode');
+        switchProfileMode(selectedMode);
+      });
+    });
+
+    function switchProfileMode(mode) {
+      currentMode = mode;
+      const preset = MODE_PRESETS[mode];
+
+      // Update Tab UI styles
+      document.querySelectorAll('.mode-tab').forEach(tab => {
+        const isCurrent = tab.getAttribute('data-mode') === mode;
+        const iconBox = tab.querySelector('.mode-icon');
+        if (isCurrent) {
+          tab.className = 'mode-tab group relative flex items-start gap-3.5 p-3.5 rounded-xl text-left transition-all bg-indigo-600 text-white shadow-md shadow-indigo-600/20';
+          iconBox.className = 'w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center shrink-0 mt-0.5 mode-icon';
+        } else {
+          tab.className = 'mode-tab group relative flex items-start gap-3.5 p-3.5 rounded-xl text-left transition-all hover:bg-slate-50 text-slate-700';
+          iconBox.className = 'w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 mt-0.5 mode-icon';
+        }
+      });
+
+      // Toggle visibility of HDB Selling Module & MSR Gauge
+      const sellModule = document.getElementById('moduleSellHdb');
+      const msrGauge = document.getElementById('rowMsrGauge');
+      const subExtraCash = document.getElementById('subExtraCash');
+      const subExtraCpf = document.getElementById('subExtraCpf');
+
+      if (mode === 'upgrade') {
+        sellModule.classList.remove('hidden');
+        subExtraCash.textContent = 'On top of HDB cash proceeds';
+        subExtraCpf.textContent = 'On top of HDB CPF refund';
+      } else {
+        sellModule.classList.add('hidden');
+        subExtraCash.textContent = 'Total cash available for purchase';
+        subExtraCpf.textContent = 'Total CPF OA available for purchase';
+      }
+
+      if (mode === 'hdb') {
+        msrGauge.classList.remove('hidden');
+      } else {
+        msrGauge.classList.add('hidden');
+      }
+
+      // Apply Preset Values
+      document.getElementById('activeModeBadge').textContent = preset.badge;
+      document.getElementById('titleBuyModule').textContent = preset.buyTitle;
+
+      document.getElementById('numBuyPrice').value = preset.buyPrice;
+      document.getElementById('rngBuyPrice').value = preset.buyPrice;
+
+      document.getElementById('numExtraCash').value = preset.extraCash;
+      document.getElementById('rngExtraCash').value = preset.extraCash;
+
+      document.getElementById('numExtraCpf').value = preset.extraCpf;
+      document.getElementById('rngExtraCpf').value = preset.extraCpf;
+
+      document.getElementById('numIncome').value = preset.income;
+      document.getElementById('rngIncome').value = preset.income;
+
+      document.getElementById('rngTenure').max = preset.maxTenure;
+      document.getElementById('numTenure').value = preset.tenure;
+      document.getElementById('rngTenure').value = preset.tenure;
+
+      runCalculationEngine();
+    }
+
+    // Reset Button
+    document.getElementById('btnReset').addEventListener('click', () => {
+      document.getElementById('numSalePrice').value = 750000;
+      document.getElementById('rngSalePrice').value = 750000;
+      document.getElementById('numOutstandingLoan').value = 220000;
+      document.getElementById('rngOutstandingLoan').value = 220000;
+      document.getElementById('numCpfRefund').value = 180000;
+      document.getElementById('rngCpfRefund').value = 180000;
+      document.getElementById('numOtherDebt').value = 0;
+      document.getElementById('rngOtherDebt').value = 0;
+      document.getElementById('numLtv').value = 75;
+      document.getElementById('rngLtv').value = 75;
+      document.getElementById('selAbsdProfile').value = '0';
+      document.getElementById('numActualRate').value = 3.0;
+      document.getElementById('numAgentComm').value = 2.0;
+      document.getElementById('numBuyLegal').value = 3500;
+      document.getElementById('numSellLegal').value = 2500;
+      switchProfileMode(currentMode);
+    });
+
+    // =========================================================================
+    // 4. CORE CALCULATION & RECOMMENDATION ENGINE
+    // =========================================================================
+    let latestSummaryReportText = '';
+
+    function runCalculationEngine() {
+      // Read Inputs
+      const salePrice = parseFloat(document.getElementById('numSalePrice').value) || 0;
+      const outLoan = parseFloat(document.getElementById('numOutstandingLoan').value) || 0;
+      const cpfRefund = parseFloat(document.getElementById('numCpfRefund').value) || 0;
+
+      const buyPrice = parseFloat(document.getElementById('numBuyPrice').value) || 0;
+      const extraCash = parseFloat(document.getElementById('numExtraCash').value) || 0;
+      const extraCpf = parseFloat(document.getElementById('numExtraCpf').value) || 0;
+
+      const income = parseFloat(document.getElementById('numIncome').value) || 1;
+      const otherDebt = parseFloat(document.getElementById('numOtherDebt').value) || 0;
+      const ltvPct = Math.min(75, Math.max(10, parseFloat(document.getElementById('numLtv').value) || 75));
+      const tenure = Math.min(35, Math.max(5, parseFloat(document.getElementById('numTenure').value) || 30));
+
+      // Read Assumptions
+      const absdCode = document.getElementById('selAbsdProfile').value;
+      const actualRate = parseFloat(document.getElementById('numActualRate').value) || 3.0;
+      const agentCommPct = parseFloat(document.getElementById('numAgentComm').value) || 2.0;
+      const buyLegal = parseFloat(document.getElementById('numBuyLegal').value) || 3500;
+      const sellLegal = parseFloat(document.getElementById('numSellLegal').value) || 2500;
+
+      // -----------------------------------------------------------------------
+      // A. HDB SALE CALCULATION (If in 'upgrade' mode)
+      // -----------------------------------------------------------------------
+      let sellCosts = 0;
+      let netCashFromSale = 0;
+      let cpfFromSale = 0;
+
+      if (currentMode === 'upgrade') {
+        sellCosts = Math.round(salePrice * (agentCommPct / 100)) + sellLegal;
+        const rawAfterLoanAndCosts = salePrice - outLoan - sellCosts;
+        cpfFromSale = Math.max(0, Math.min(cpfRefund, rawAfterLoanAndCosts));
+        netCashFromSale = Math.max(0, rawAfterLoanAndCosts - cpfRefund);
+
+        document.getElementById('lblMiniSellCosts').textContent = fmtSGD(sellCosts);
+        document.getElementById('lblMiniCpfRefunded').textContent = fmtSGD(cpfFromSale);
+        document.getElementById('lblMiniNetCash').textContent = fmtSGD(netCashFromSale);
+      }
+
+      const totalAvailableCash = netCashFromSale + extraCash;
+      const totalAvailableCpf = cpfFromSale + extraCpf;
+      const totalWarChest = totalAvailableCash + totalAvailableCpf;
+
+      // -----------------------------------------------------------------------
+      // B. TARGET PROPERTY PURCHASE & STAMP DUTY CALCULATION
+      // -----------------------------------------------------------------------
+      const loanPrincipal = Math.round(buyPrice * (ltvPct / 100));
+      const totalDownPaymentPct = 100 - ltvPct;
+      const minCashDpPct = 5; // MAS statutory 5% min cash for bank loan
+      const remDpPct = Math.max(0, totalDownPaymentPct - minCashDpPct);
+
+      const minCashDp = Math.round(buyPrice * (minCashDpPct / 100));
+      const remDpAmount = Math.round(buyPrice * (remDpPct / 100));
+
+      const bsdAmount = calculateIRAS_BSD(buyPrice);
+
+      let absdPct = 0;
+      let isAbsdRemission = false;
+      if (absdCode === '20_remit') {
+        absdPct = 20;
+        isAbsdRemission = true;
+      } else {
+        absdPct = parseFloat(absdCode) || 0;
+      }
+      const absdAmount = Math.round(buyPrice * (absdPct / 100));
+      const totalStampDuty = bsdAmount + absdAmount;
+
+      // How CPF and Cash are allocated:
+      // CPF OA can pay: Remaining 20% Down Payment + BSD + ABSD + Buy Legal Fees
+      const cpfEligibleCosts = remDpAmount + totalStampDuty + buyLegal;
+      const cpfUsed = Math.min(totalAvailableCpf, cpfEligibleCosts);
+      const uncoveredByCpf = Math.max(0, cpfEligibleCosts - cpfUsed);
+
+      // Cash must pay: 5% Min Cash Down Payment + any CPF-eligible costs not covered by CPF OA
+      const totalCashNeeded = minCashDp + uncoveredByCpf;
+      const totalUpfrontRequired = minCashDp + cpfEligibleCosts;
+
+      const cashBufferOrShortfall = totalAvailableCash - totalCashNeeded;
+      const remainingUnusedCpf = Math.max(0, totalAvailableCpf - cpfUsed);
+      const netOverallBuffer = cashBufferOrShortfall + remainingUnusedCpf;
+
+      // -----------------------------------------------------------------------
+      // C. HOME LOAN & MAS TDSR (55%) / MSR (30%) STRESS TEST
+      // -----------------------------------------------------------------------
+      const masStressRate = Math.max(4.0, actualRate); // MAS statutory minimum 4.0% stress floor
+      const actualMonthlyPayment = calculateMonthlyMortgage(loanPrincipal, actualRate, tenure);
+      const stressMonthlyPayment = calculateMonthlyMortgage(loanPrincipal, masStressRate, tenure);
+
+      const tdsrRatio = ((stressMonthlyPayment + otherDebt) / income) * 100;
+      const msrRatio = (stressMonthlyPayment / income) * 100;
+
+      const tdsrPass = tdsrRatio <= 55.0;
+      const msrPass = currentMode === 'hdb' ? (msrRatio <= 30.0) : true;
+      const loanPass = tdsrPass && msrPass;
+      const cashPass = cashBufferOrShortfall >= 0;
+
+      // Max Allowed Monthly Mortgage under MAS rules
+      const maxAllowedTdsrPayment = Math.max(0, (income * 0.55) - otherDebt);
+      const maxAllowedMsrPayment = income * 0.30;
+      const bindingMaxPayment = currentMode === 'hdb'
+        ? Math.min(maxAllowedTdsrPayment, maxAllowedMsrPayment)
+        : maxAllowedTdsrPayment;
+
+      const maxEligibleLoan = calculateMaxLoanFromPayment(bindingMaxPayment, masStressRate, tenure);
+
+      // -----------------------------------------------------------------------
+      // D. UPDATE HERO DASHBOARD & GAUGES
+      // -----------------------------------------------------------------------
+      document.getElementById('heroMonthlyPayment').textContent = fmtSGD(actualMonthlyPayment) + '/mo';
+      document.getElementById('heroRateSubtext').innerHTML = `At <span class="text-indigo-300 font-semibold">${actualRate.toFixed(1)}% p.a.</span> (${fmtSGD(loanPrincipal)} loan)`;
+
+      const heroBufferEl = document.getElementById('heroNetBuffer');
+      const heroPosLabel = document.getElementById('heroPositionLabel');
+      const heroBufferSub = document.getElementById('heroBufferSubtext');
+
+      if (cashPass) {
+        heroPosLabel.textContent = 'Net Cash + CPF Surplus';
+        heroBufferEl.textContent = fmtSGD(netOverallBuffer, true);
+        heroBufferEl.className = 'font-mono text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1';
+        heroBufferSub.textContent = `${fmtSGD(cashBufferOrShortfall)} Cash + ${fmtSGD(remainingUnusedCpf)} CPF buffer`;
+      } else {
+        heroPosLabel.textContent = 'Cash Shortfall Detected';
+        heroBufferEl.textContent = fmtSGD(cashBufferOrShortfall);
+        heroBufferEl.className = 'font-mono text-2xl sm:text-3xl font-extrabold text-rose-400 mt-1';
+        heroBufferSub.textContent = `Top-up needed for down payment/duties`;
+      }
+
+      // Overall Verdict Badge
+      const verdictBadge = document.getElementById('badgeOverallVerdict');
+      if (loanPass && cashPass) {
+        verdictBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        verdictBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> READY TO PROCEED';
+      } else if (!loanPass && !cashPass) {
+        verdictBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        verdictBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> CASH & TDSR SHORTFALL';
+      } else {
+        verdictBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        verdictBadge.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ADJUSTMENT NEEDED';
+      }
+
+      // Update TDSR Gauge
+      const lblTdsr = document.getElementById('lblTdsrValue');
+      const barTdsr = document.getElementById('barTdsr');
+      lblTdsr.textContent = `${tdsrRatio.toFixed(1)}% / 55.0% Max`;
+      lblTdsr.className = `font-mono font-bold ${tdsrPass ? 'text-emerald-400' : 'text-rose-400'}`;
+      barTdsr.style.width = `${Math.min(100, tdsrRatio)}%`;
+      barTdsr.className = `h-full rounded-full transition-all duration-300 ${tdsrPass ? 'bg-emerald-500' : 'bg-rose-500'}`;
+
+      // Update MSR Gauge (if HDB mode)
+      if (currentMode === 'hdb') {
+        const lblMsr = document.getElementById('lblMsrValue');
+        const barMsr = document.getElementById('barMsr');
+        lblMsr.textContent = `${msrRatio.toFixed(1)}% / 30.0% Max`;
+        lblMsr.className = `font-mono font-bold ${msrPass ? 'text-emerald-400' : 'text-rose-400'}`;
+        barMsr.style.width = `${Math.min(100, (msrRatio / 50) * 100)}%`;
+        barMsr.className = `h-full rounded-full transition-all duration-300 ${msrPass ? 'bg-emerald-500' : 'bg-rose-500'}`;
+      }
+
+      // -----------------------------------------------------------------------
+      // E. UPDATE BREAKDOWN TABLE & VISUAL STACKED BAR
+      // -----------------------------------------------------------------------
+      const totalAcquisitionCost = buyPrice + totalStampDuty + buyLegal;
+      document.getElementById('lblTotalPurchaseCost').textContent = `Total Cost: ${fmtSGD(totalAcquisitionCost)}`;
+
+      const cashActuallyUsed = Math.min(totalAvailableCash, totalCashNeeded);
+      const shortfallAmt = Math.max(0, totalCashNeeded - totalAvailableCash);
+
+      const pLoan = (loanPrincipal / totalAcquisitionCost) * 100;
+      const pCpf = (cpfUsed / totalAcquisitionCost) * 100;
+      const pCash = (cashActuallyUsed / totalAcquisitionCost) * 100;
+      const pShort = (shortfallAmt / totalAcquisitionCost) * 100;
+
+      document.getElementById('segLoan').style.width = `${pLoan}%`;
+      document.getElementById('segCpf').style.width = `${pCpf}%`;
+      document.getElementById('segCash').style.width = `${pCash}%`;
+
+      const segShortEl = document.getElementById('segShortfall');
+      if (shortfallAmt > 0) {
+        segShortEl.classList.remove('hidden');
+        segShortEl.style.width = `${pShort}%`;
+      } else {
+        segShortEl.classList.add('hidden');
+      }
+
+      document.getElementById('legLoan').textContent = fmtSGD(loanPrincipal);
+      document.getElementById('legCpf').textContent = fmtSGD(cpfUsed);
+      document.getElementById('legCash').textContent = fmtSGD(totalCashNeeded);
+
+      document.getElementById('tblMinCash').textContent = fmtSGD(minCashDp);
+      document.getElementById('lblRemDpPct').textContent = `${remDpPct}%`;
+      document.getElementById('tblRemDp').textContent = fmtSGD(remDpAmount);
+      document.getElementById('tblBsd').textContent = fmtSGD(bsdAmount);
+
+      const rowAbsd = document.getElementById('rowAbsdTable');
+      if (absdAmount > 0) {
+        rowAbsd.classList.remove('hidden');
+        document.getElementById('tblAbsd').textContent = `${fmtSGD(absdAmount)} (${absdPct}%)`;
+      } else {
+        rowAbsd.classList.add('hidden');
+      }
+
+      document.getElementById('tblLegalBuy').textContent = fmtSGD(buyLegal);
+      document.getElementById('tblTotalUpfrontReq').textContent = fmtSGD(totalUpfrontRequired);
+      document.getElementById('tblTotalAvailable').textContent = fmtSGD(totalWarChest);
+
+      // -----------------------------------------------------------------------
+      // F. GENERATE DETERMINISTIC EXECUTIVE SUMMARY & RECOMMENDATIONS
+      // -----------------------------------------------------------------------
+      const recContainer = document.getElementById('recommendationList');
+      const cards = [];
+
+      // 1. MAS Loan & TDSR / MSR Pillar
+      if (loanPass) {
+        cards.push(`
+          <div class="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200">
+            <div class="flex items-center justify-between font-bold text-emerald-900 mb-1">
+              <span><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>1. MAS Loan Eligibility: APPROVED</span>
+              <span class="font-mono text-[11px] bg-emerald-100 px-2 py-0.5 rounded text-emerald-800">TDSR ${tdsrRatio.toFixed(1)}%</span>
+            </div>
+            <p class="text-slate-700">
+              Your stress-tested monthly repayment at 4.0% p.a. is <strong>${fmtSGD(stressMonthlyPayment)}/mo</strong>, safely within the MAS 55% TDSR limit. Your maximum eligible loan is <strong>${fmtSGD(maxEligibleLoan)}</strong>. Your actual monthly mortgage at ${actualRate.toFixed(1)}% is <strong>${fmtSGD(actualMonthlyPayment)}/mo</strong>.
+            </p>
+          </div>
+        `);
+      } else {
+        const loanExcess = Math.max(0, loanPrincipal - maxEligibleLoan);
+        const requiredIncome = currentMode === 'hdb' && !msrPass
+          ? Math.ceil(stressMonthlyPayment / 0.30)
+          : Math.ceil((stressMonthlyPayment + otherDebt) / 0.55);
+        const incomeGap = Math.max(0, requiredIncome - income);
+        // Under MAS rules, pledging cash for 4 years recognizes 100% of value / 48 months
+        const pledgedCashAlternative = Math.ceil((incomeGap * 48) / 0.3);
+
+        cards.push(`
+          <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200">
+            <div class="flex items-center justify-between font-bold text-rose-900 mb-1">
+              <span><i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1.5"></i>1. MAS Loan Limit Exceeded</span>
+              <span class="font-mono text-[11px] bg-rose-100 px-2 py-0.5 rounded text-rose-800">${!msrPass ? `MSR ${msrRatio.toFixed(1)}% (>30%)` : `TDSR ${tdsrRatio.toFixed(1)}% (>55%)`}</span>
+            </div>
+            <p class="text-slate-700">
+              At the mandatory 4.0% MAS stress-test rate, your maximum qualifying loan is <strong>${fmtSGD(maxEligibleLoan)}</strong> (a loan shortfall of <strong>${fmtSGD(loanExcess)}</strong>).
+              <br><strong class="text-rose-900">Actionable Fix:</strong> Either reduce target property price by <strong>${fmtSGD(loanExcess / (ltvPct/100))}</strong>, clear existing monthly debts, or increase qualifying monthly income by <strong>${fmtSGD(incomeGap)}/mo</strong> (e.g., via MAS eligible asset pledging/showing funds).
+            </p>
+          </div>
+        `);
+      }
+
+      // 2. Upfront Cash & CPF War Chest Pillar
+      if (cashPass) {
+        cards.push(`
+          <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200">
+            <div class="flex items-center justify-between font-bold text-indigo-900 mb-1">
+              <span><i class="fa-solid fa-wallet text-indigo-600 mr-1.5"></i>2. Upfront Cash & CPF Adequacy: COVERED</span>
+              <span class="font-mono text-[11px] bg-indigo-100 px-2 py-0.5 rounded text-indigo-800">${fmtSGD(netOverallBuffer, true)} Buffer</span>
+            </div>
+            <p class="text-slate-700">
+              Your total upfront requirement of <strong>${fmtSGD(totalUpfrontRequired)}</strong> (comprising <strong>${fmtSGD(minCashDp)}</strong> mandatory 5% cash, <strong>${fmtSGD(remDpAmount)}</strong> balance down payment, and <strong>${fmtSGD(totalStampDuty)}</strong> Stamp Duty) is fully covered. You will retain a post-purchase reserve of <strong>${fmtSGD(cashBufferOrShortfall)} in Cash</strong> and <strong>${fmtSGD(remainingUnusedCpf)} in CPF OA</strong>.
+            </p>
+          </div>
+        `);
+      } else {
+        cards.push(`
+          <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
+            <div class="flex items-center justify-between font-bold text-amber-900 mb-1">
+              <span><i class="fa-solid fa-coins text-amber-600 mr-1.5"></i>2. Upfront Capital Shortfall: ${fmtSGD(Math.abs(cashBufferOrShortfall))}</span>
+              <span class="font-mono text-[11px] bg-amber-100 px-2 py-0.5 rounded text-amber-800">Action Required</span>
+            </div>
+            <p class="text-slate-700">
+              You need <strong>${fmtSGD(totalCashNeeded)} in Cash</strong> (after utilizing all <strong>${fmtSGD(cpfUsed)}</strong> of available CPF OA), leaving a cash gap of <strong>${fmtSGD(Math.abs(cashBufferOrShortfall))}</strong>.
+              <br><strong class="text-amber-900">Actionable Fix:</strong> Lower target purchase price to approximately <strong>${fmtSGD(Math.floor((buyPrice - Math.abs(cashBufferOrShortfall) * 3.3) / 10000) * 10000)}</strong> or top up cash savings.
+            </p>
+          </div>
+        `);
+      }
+
+      // 3. Timeline & Transition Strategy Pillar
+      if (currentMode === 'upgrade') {
+        if (isAbsdRemission) {
+          cards.push(`
+            <div class="p-3.5 rounded-xl bg-amber-50/90 border border-amber-200">
+              <div class="font-bold text-amber-900 mb-1">
+                <i class="fa-solid fa-clock-rotate-left text-amber-600 mr-1.5"></i>3. Upgrader Timeline Strategy (ABSD Remission Alert)
+              </div>
+              <p class="text-slate-700">
+                Because you selected <em>Buying Condo Before Selling HDB</em>, you must pay <strong>${fmtSGD(absdAmount)} (20% ABSD)</strong> upfront within 14 days of signing the Condo OTP. To claim a full IRAS ABSD refund, you must be a married couple (at least one SC) and sell your HDB within <strong>6 months</strong> of exercising the Resale Condo OTP (or TOP for New Launch).
+              </p>
+            </div>
+          `);
+        } else {
+          cards.push(`
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-1">
+                <i class="fa-solid fa-route text-indigo-600 mr-1.5"></i>3. Upgrader Timeline & Bridging Recommendation
+              </div>
+              <p class="text-slate-700">
+                To enjoy <strong>0% ABSD</strong> and use your <strong>${fmtSGD(netCashFromSale)} HDB cash proceeds</strong> + <strong>${fmtSGD(cpfFromSale)} CPF refund</strong> directly for the Condo completion, grant the Option to Purchase (OTP) to your HDB buyer <em>before</em> signing the OTP for your target Condo. Note: CPF refunded from your HDB sale takes ~10–14 working days after HDB completion to credit back into your CPF OA.
+              </p>
+            </div>
+          `);
+        }
+      } else {
+        cards.push(`
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="font-bold text-slate-900 mb-1">
+              <i class="fa-solid fa-file-signature text-indigo-600 mr-1.5"></i>3. Pre-OTP Execution Advice
+            </div>
+            <p class="text-slate-700">
+              Secure an <strong>In-Principle Approval (IPA)</strong> from at least 2 banks (or an HFE letter on the HDB Flat Portal if buying HDB) before placing a 1% Option Fee (<strong>${fmtSGD(buyPrice * 0.01)} in cash</strong>). Remember that Buyer's Stamp Duty (<strong>${fmtSGD(bsdAmount)}</strong>) is payable within 14 days of exercising the OTP.
+            </p>
+          </div>
+        `);
+      }
+
+      recContainer.innerHTML = cards.join('');
+
+      // Store plain-text advisory summary for clipboard copy
+      latestSummaryReportText = [
+        `=== SINGAPORE PROPERTY FINANCIAL SUMMARY ===`,
+        `Journey: ${MODE_PRESETS[currentMode].badge}`,
+        currentMode === 'upgrade'
+          ? `HDB Sale Price: ${fmtSGD(salePrice)} | Net Cash Proceeds: ${fmtSGD(netCashFromSale)} | CPF Refund: ${fmtSGD(cpfFromSale)}`
+          : null,
+        `Target Purchase Price: ${fmtSGD(buyPrice)} (${ltvPct}% LTV Loan: ${fmtSGD(loanPrincipal)})`,
+        `Upfront Required: ${fmtSGD(totalUpfrontRequired)} (5% Cash: ${fmtSGD(minCashDp)} | ${remDpPct}% DP: ${fmtSGD(remDpAmount)} | BSD: ${fmtSGD(bsdAmount)}${absdAmount > 0 ? ` | ABSD: ${fmtSGD(absdAmount)}` : ''})`,
+        `Total War Chest Available: ${fmtSGD(totalWarChest)} (Cash: ${fmtSGD(totalAvailableCash)} | CPF OA: ${fmtSGD(totalAvailableCpf)})`,
+        `Net Upfront Surplus/Shortfall: ${fmtSGD(cashPass ? netOverallBuffer : cashBufferOrShortfall, true)}`,
+        `Est. Monthly Mortgage (${actualRate.toFixed(1)}% p.a., ${tenure} yrs): ${fmtSGD(actualMonthlyPayment)}/mo`,
+        `MAS Stress-Test TDSR (at 4.0% p.a.): ${tdsrRatio.toFixed(1)}% / 55.0% (${loanPass ? 'PASS' : 'EXCEEDED'})`,
+        `Max Eligible Loan under MAS Rules: ${fmtSGD(maxEligibleLoan)}`
+      ].filter(Boolean).join('\n');
+    }
+
+    // =========================================================================
+    // 5. CLIPBOARD COPY HANDLER
+    // =========================================================================
+    document.getElementById('btnCopyReport').addEventListener('click', () => {
+      const textarea = document.createElement('textarea');
+      textarea.value = latestSummaryReportText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Advisory summary copied to clipboard!');
+      } catch (err) {
+        showToast('Could not copy automatically.');
+      }
+      document.body.removeChild(textarea);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 2800);
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      runCalculationEngine();
+    });
+  </script>
+</body>
+</html>
